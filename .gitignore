@@ -1,7 +1,4 @@
 # Data & Datasets
-dataset/
-dataset.zip
-dataset_yolo/
 
 # Virtual Environment & Cache
 .venv/
