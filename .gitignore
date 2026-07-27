@@ -1,7 +1,4 @@
 # Data & Datasets
-dataset/
-dataset.zip
-dataset_yolo/
 
 # Virtual Environment & Cache
 .venv/
@@ -24,3 +21,5 @@ best.pt
 .DS_Store
 Thumbs.db
 *.log
+
+report.md
