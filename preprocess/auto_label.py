@@ -85,11 +85,25 @@ def find_pill_bbox(img):
     c = max(contours, key=cv2.contourArea)
     area = cv2.contourArea(c)
 
-    # 너무 작으면(노이즈) 또는 너무 크면(배경 전체를 잡음) 실패 처리
-    if area < img_area * 0.005 or area > img_area * 0.9:
+    # 너무 작으면(노이즈) 실패 처리
+    if area < img_area * 0.005:
         return None
 
     x, y, w, h = cv2.boundingRect(c)
+    bbox_area = w * h
+
+    # 라벨에 실제로 쓰는 건 boundingRect이므로 이 면적도 90% 기준으로 체크해야 함
+    # (컨투어 면적만 체크하면, 배경 노이즈로 가늘고 길게 퍼진 컨투어의 외접 사각형이
+    #  이미지 전체를 덮어도 통과해버림)
+    if bbox_area > img_area * 0.9:
+        return None
+
+    # 채움비(컨투어 면적 / 외접 사각형 면적)가 너무 낮으면 알약 덩어리가 아니라
+    # 흩어진 노이즈/그림자일 가능성이 높음
+    extent = area / bbox_area if bbox_area > 0 else 0
+    if extent < 0.35:
+        return None
+
     return x, y, w, h
 
 

@@ -40,3 +40,17 @@
 - [ ] `data.yaml`의 `path` 경로를 자기 환경에 맞게 확인/수정
 - [ ] `train/train_yolo.py`에 실제 YOLOv8 학습 코드 작성 (`data.yaml` 받은 뒤)
 - [ ] 학습 후 `best.pt` 생성 → `yolov8_cam.py`로 웹캠 데모 검증
+
+## 추가 발견 및 수정 (같은 날, 라벨 재검수)
+- **문제 발견**: white_caplet만 검수하고 나머지 5개 클래스는 검수를 안 했었는데, 다시 확인해보니 820장 중 192장(23%)이 `auto_label.py`가 배경을 알약으로 잘못 잡아 박스가 이미지 전체(`0.5 0.5 1.0 1.0`)로 저장돼 있었음
+  - pink_caplet 52/146(36%), mint_circle 50/129(39%), yellow_caplet 39/147(27%), capsule 29/109(27%), green_caplet 22/148(15%), white_caplet 0/141(이미 검수 완료)
+- **원인**: `find_pill_bbox()`가 컨투어 면적만 90% 기준으로 체크하고, 실제 라벨에 쓰는 `boundingRect` 면적은 검증 안 함. 배경 그림자/저대비로 흩어진 컨투어가 잡히면 컨투어 면적은 작아도 외접 사각형이 전체 프레임을 덮는 경우가 있었음
+- **`preprocess/auto_label.py` 수정**: `boundingRect` 면적 재검증 + 컨투어 채움비(extent) 필터 추가 → 앞으로 이런 경우 조용히 틀린 라벨을 쓰는 대신 "실패"로 보고하게 됨
+- **192장 재라벨링**: 알고리즘 재시도(면적 필터 개선, GrabCut, HSV 채도 기반 분리)로는 저대비+그림자 그라데이션 때문에 1장만 자동 복구되고 나머지 191장은 실패 → 수동으로 진행
+  - capsule(28장 +자동복구 1장) / green_caplet(22장) / mint_circle(50장) / pink_caplet(52장): 그리드 좌표 오버레이 보고 bbox 직접 추정해서 라벨 작성
+  - yellow_caplet(39장): `labelImg` GUI로 직접 라벨링. 설치 시 PyQt5 5.15와 안 맞아 스크롤할 때 크래시(`labelImg.py` 965번 줄 `scroll_request`에서 float를 int 인자에 전달) → 패치해서 해결
+- **검증**: 클래스별로 박스 그린 리뷰 이미지 만들어서 육안 확인, 이상 없음
+
+## 알아둘 점 (추가)
+- 이번 수정은 `dataset/labels/{train,val}`에 직접 반영함 (이미 split된 구조라 `split_and_build.py`를 다시 돌릴 필요는 없음)
+- **기존에 공유했거나 공유 예정이던 `dataset.zip` / `dataset_yolo`는 이 수정 전 상태라 최신이 아님** — 팀원에게 이미 넘겼다면 다시 압축/공유 필요
