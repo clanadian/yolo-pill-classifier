@@ -1,0 +1,26 @@
+# Data & Datasets
+dataset/
+dataset.zip
+dataset_yolo/
+
+# Virtual Environment & Cache
+.venv/
+__pycache__/
+*.cache
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Runs & Models
+runs/
+yolov8n.pt
+yolov8*.pt
+best.pt
+
+# IDEs & System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
