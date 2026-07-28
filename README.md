@@ -86,6 +86,12 @@ Colab(T4 GPU)에서 돌리려면 `train_on_colab.ipynb`를 열어서 순서대�
 python stream/server.py
 ```
 
+Jetson Nano처럼 느린 보드에서는 해상도/전송 프레임을 낮춰서 시작하는 걸 권장합니다:
+
+```bash
+python3 stream/server.py --width 480 --height 360 --max-fps 5
+```
+
 브라우저로 `http://<보드 IP>:8000/` 접속하면 웹캠 영상에 탐지 결과가 얹혀 보입니다.
 Jetson Nano 세팅, 옵션, 성능 관련 참고사항은 `stream/README.md`를 참고하세요.
 
