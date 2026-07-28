@@ -1,0 +1,9 @@
+train: images/train
+val: images/val
+names:
+  0: capsule
+  1: green_caplet
+  2: mint_circle
+  3: pink_caplet
+  4: white_caplet
+  5: yellow_caplet
