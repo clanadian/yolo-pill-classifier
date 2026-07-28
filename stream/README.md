@@ -43,10 +43,13 @@ python stream/server.py --device cpu
 - 만약 처음부터 환경을 새로 구성해야 한다면, NVIDIA의 `l4t-ml` / `l4t-pytorch`
   Docker 컨테이너를 사용하는 것이 현실적인 방법이다(이 저장소는 해당 컨테이너
   구성을 자동화하지 않는다).
-- Maxwell GPU(128 코어)에서 순수 `.pt` 추론은 640px 기준 체감 1~3 FPS로 느릴 수
-  있다. `--width`/`--height`로 해상도를 낮추고 `--max-fps`로 전송 속도를 제한하는
-  것은 이 때문이다. 콘솔에 5초 주기로 찍히는 `inference fps` 로그로 실제 속도를
-  확인할 수 있다.
+- Maxwell GPU(128 코어)에서 순수 `.pt` 추론은 느리다. 실측(480x360, `--max-fps 5`,
+  전력모드 MAXN·클럭 최대 고정, 3회 독립 실행 재현): 시작 직후 5~7fps →
+  1분 전후로 **3.3~4.3fps로 수렴**(대표값 약 3.5~4fps). 온도는 30°C 안팎으로 열
+  스로틀링은 아니고, GPU는 대부분 유휴 상태라 GPU 연산 자체가 병목도 아니다(자세한
+  측정 방법·근거는 `docs/report.md` 6번 항목 참고). `--width`/`--height`로
+  해상도를 낮추고 `--max-fps`로 전송 속도를 제한하는 것은 이 때문이다. 콘솔에
+  5초 주기로 찍히는 `inference fps` 로그로 실제 속도를 확인할 수 있다.
 - 더 빠르게 하려면 `model.export(format="engine")`(TensorRT)로 변환 후
   `--model best.engine`으로 실행하는 것을 고려할 수 있다(이 저장소에서 자동화하지
   않음, 수동 후속 작업).
