@@ -1,4 +1,12 @@
 # Data & Datasets
+# dataset/ 은 일부러 커밋한다. Colab에서 git clone 한 번으로 코드+데이터를 받아
+# 바로 학습하기 위함 (960x960 리사이즈본, 약 146MB). train_on_colab.ipynb 참고.
+# 아래는 로컬 중간 산출물이라 올리지 않는다.
+dataset_raw/
+dataset_yolo/
+dataset_yolo_colab/
+_review/
+*.zip
 
 # Virtual Environment & Cache
 .venv/
