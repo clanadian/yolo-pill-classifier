@@ -12,7 +12,7 @@ YOLOv8을 학습해 6종 알약을 실시간으로 탐지하고, Jetson Nano에�
 - ✅ 복용 조합 주의 배너 · 복용량 · 복용 타이밍 안내
 - ✅ FastAPI·WebSocket 기반 실시간 웹 스트리밍
 
-<video src="https://github.com/user-attachments/assets/9fc1c7e3-b32c-4d7b-946e-8a9aced14672" width="600" controls></video>
+<video src="https://github.com/user-attachments/assets/1699e528-d910-43a6-86cc-232d9a9aed14" width="600" controls></video>
 
 **실시간 탐지 데모** — 웹캠으로 여러 알약을 동시에 인식해 종류·이름을 표시합니다.
 실시간 웹캠뿐 아니라 저장된 영상 파일도 분석할 수 있습니다 (실행 방법은 아래
@@ -34,7 +34,7 @@ YOLOv8을 학습해 6종 알약을 실시간으로 탐지하고, Jetson Nano에�
 | 검증 mAP50 | **0.974** |
 | 검증 mAP50-95 | **0.803** |
 | 추론 플랫폼 | Jetson Nano (JetPack 4.6, t210ref) |
-| 실측 FPS | 초기 5-7fps → 1분 전후 3.3-4.3fps로 수렴 (대표값 약 3.5-4fps) |
+| 실측 FPS | 초기 5-7fps → 약 1분 후 평균 3.8fps 수준으로 안정화 (대표값 약 3.5-4fps) |
 | 웹 UI | FastAPI + WebSocket |
 
 클래스별 상세 지표(precision/recall/mAP), FPS 측정 방법론 3회 재현 결과는
@@ -211,7 +211,7 @@ Colab(T4 GPU)에서 돌리려면 `notebooks/train_on_colab.ipynb`를 열어서 �
 
 - 데이터 촬영·라벨링부터 학습, Jetson Nano 배포, 웹 UI까지 전체 파이프라인을 직접 구축
 - 검증 mAP50 0.974 · mAP50-95 0.803 달성 (자세한 수치는 위 [결과](#결과) 참고)
-- 반복적으로 발견된 자동 라벨링/색감 오류 사례를 원인 분석 후 재현 가능한 방식으로 해결
+- 반복적으로 발생한 자동 라벨링 실패와 색상 오분류 사례를 원인 분석 후 검증 필터, LUT, 수동 검수 파이프라인으로 개선
 
 ## 한계 및 개선 방향
 
