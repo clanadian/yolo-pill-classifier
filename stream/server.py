@@ -8,7 +8,7 @@ USB 웹캠 영상에 YOLO 탐지 결과(bbox+라벨)를 입혀 WebSocket으로
 사용법:
     python stream/server.py
     python stream/server.py --source 0 --width 480 --height 360 --max-fps 5
-    python stream/server.py --model best.pt --device 0
+    python stream/server.py --model weights/best.pt --device 0
 
 동작 방식:
     카메라 읽기 + 추론은 블로킹 작업이라 별도 스레드(capture_loop)에서 돌리고,
@@ -33,7 +33,7 @@ from fastapi.staticfiles import StaticFiles
 from detector import infer_and_annotate, load_model
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_MODEL = REPO_ROOT / "best.pt"
+DEFAULT_MODEL = REPO_ROOT / "weights" / "best.pt"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 DEFAULT_COMBOS = Path(__file__).resolve().parent / "combos.json"
 DEFAULT_TIMINGS = Path(__file__).resolve().parent / "timing.json"
@@ -275,7 +275,7 @@ def parse_args():
     )
     parser.add_argument(
         "--model", type=Path, default=DEFAULT_MODEL,
-        help="가중치 경로 (기본: 저장소 루트의 best.pt)",
+        help="가중치 경로 (기본: weights/best.pt)",
     )
     parser.add_argument(
         "--source", default="0", help="카메라 인덱스 또는 영상 경로 (기본: 0)"

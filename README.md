@@ -17,12 +17,15 @@ YOLOv8을 학습시킨 뒤, Jetson Nano에서 웹캠 영상에 실시간으로 �
 ├── dataset/              # 학습용 최종 데이터셋 (images/labels train,val + data.yaml)
 ├── preprocess/           # 라벨링 파이프라인: auto_label.py, split_and_build.py
 ├── train/                # 학습 스크립트: train_yolo.py
-├── train_on_colab.ipynb  # Colab(T4 GPU)에서 학습하고 싶을 때
+├── notebooks/
+│   └── train_on_colab.ipynb  # Colab(T4 GPU)에서 학습하고 싶을 때
+├── weights/
+│   └── best.pt           # 학습된 가중치 (--export-best로 생성, 데모가 읽는 기본 경로)
 ├── stream/               # Jetson Nano 실시간 웹 스트리밍 데모
 ├── docs/
 │   ├── report.md         # 트러블슈팅 로그 (문제/원인/조치 기록)
-│   └── update.md         # 날짜별 진행 상황 및 팀원 간 인수인계 메모
-├── pill_combo_plan.md    # 알약 조합 안내 배너 기능 기획서
+│   ├── update.md         # 날짜별 진행 상황 및 팀원 간 인수인계 메모
+│   └── pill_combo_plan.md # 알약 조합 안내 배너 기능 기획서
 └── requirements.txt
 ```
 
@@ -69,15 +72,15 @@ python train/train_yolo.py --device 0 --export-best
 탐지하고, 학습 전에 라벨/클래스 정합성을 먼저 검사합니다. 자세한 옵션은
 `python train/train_yolo.py --help` 참고.
 
-Colab(T4 GPU)에서 돌리려면 `train_on_colab.ipynb`를 열어서 순서대로 실행하면 됩니다
-(저장소를 clone하면 코드와 `dataset/`이 같이 받아짐).
+Colab(T4 GPU)에서 돌리려면 `notebooks/train_on_colab.ipynb`를 열어서 순서대로
+실행하면 됩니다(저장소를 clone하면 코드와 `dataset/`이 같이 받아짐).
 
-학습이 끝나면 `runs/`에 결과가 저장되고, `--export-best`를 주면 `best.pt`가 저장소
-루트로 복사됩니다.
+학습이 끝나면 `runs/`에 결과가 저장되고, `--export-best`를 주면 `weights/best.pt`로
+복사됩니다.
 
 ## 실시간 데모 (Jetson Nano)
 
-`best.pt`가 저장소 루트에 있어야 합니다.
+`weights/best.pt`가 있어야 합니다.
 
 > Jetson Nano는 JetPack 버전 제약 때문에 `ultralytics`/`opencv-python`을
 > `requirements.txt`로 그냥 설치하기 어려운 경우가 많습니다. YOLOv8 추론이 이미
@@ -102,5 +105,6 @@ Jetson Nano 세팅, 옵션, 성능 관련 참고사항은 `stream/README.md`를 
 
 - [docs/report.md](docs/report.md) — 라벨링/전처리/학습 준비 과정에서 있었던 문제와 해결 과정 기록
 - [docs/update.md](docs/update.md) — 날짜별 진행 상황, 다음 할 일, 팀원 간 인수인계 메모
-- [pill_combo_plan.md](pill_combo_plan.md) — 알약 조합 안내 배너 기능(좋은 조합/확인
-  필요 조합) 기획서, 팀원 논의용 (아직 미구현)
+- [docs/pill_combo_plan.md](docs/pill_combo_plan.md) — 알약 조합 안내 배너 기능(좋은
+  조합/확인 필요 조합) 기획서. `stream/combos.json`·`timing.json`·`dosage.json`으로
+  구현 완료
