@@ -2,31 +2,290 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pill Detector — Live</title>
   <style>
+    :root {
+      --bg-0: #0a0d13;
+      --bg-1: #12161f;
+      --card: #151a25;
+      --card-border: rgba(255, 255, 255, 0.07);
+      --hairline: rgba(255, 255, 255, 0.09);
+      --text: #edf0f6;
+      --text-dim: rgba(224, 228, 238, 0.56);
+      --text-faint: rgba(224, 228, 238, 0.34);
+      --accent: #7db2ff;
+      --accent-2: #a78bfa;
+      --good: #34d399;
+      --good-bg: rgba(52, 211, 153, 0.12);
+      --good-border: rgba(52, 211, 153, 0.4);
+      --good-text: #c9f7e3;
+      --caution: #fb923c;
+      --caution-bg: rgba(251, 146, 60, 0.13);
+      --caution-border: rgba(251, 146, 60, 0.42);
+      --caution-text: #ffe4cc;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      background: #111;
-      color: #eee;
-      font-family: system-ui, sans-serif;
-      text-align: center;
       margin: 0;
-      padding: 1.5rem;
+      min-height: 100vh;
+      background:
+        radial-gradient(52rem 28rem at 50% -12%, var(--bg-1), transparent 70%),
+        var(--bg-0);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      justify-content: center;
+      padding: 2.5rem 1.25rem 3rem;
     }
-    #status {
-      margin-bottom: 0.75rem;
-      color: #9ad;
+
+    .page {
+      width: 100%;
+      max-width: 620px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
     }
-    img {
-      max-width: 100%;
-      border: 1px solid #333;
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 0.3rem;
+    }
+
+    .brand h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin: 0;
+      background: linear-gradient(120deg, var(--text) 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-wrap: balance;
+    }
+
+    .brand .tagline {
+      display: block;
+      margin-top: 0.3rem;
+      font-size: 0.82rem;
+      color: var(--text-faint);
+      letter-spacing: 0.01em;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid var(--card-border);
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #5b6472;
+      transition: background 0.3s ease;
+    }
+
+    .status.live .status-dot {
+      background: var(--good);
+      box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    .status.retrying .status-dot {
+      background: var(--caution);
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2); }
+      50% { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0.05); }
+    }
+
+    .frame-card {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
       background: #000;
+      border: 1px solid var(--card-border);
+      box-shadow:
+        0 24px 60px -24px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      aspect-ratio: 4 / 3;
+    }
+
+    .frame-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #000;
+    }
+
+    .combo-banner {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.85rem 1.05rem;
+      border-radius: 16px;
+      animation: rise-in 0.25s ease;
+    }
+
+    .combo-banner[hidden] {
+      display: none;
+    }
+
+    .combo-banner.good {
+      background: var(--good-bg);
+      border: 1px solid var(--good-border);
+      color: var(--good-text);
+    }
+
+    .combo-banner.caution {
+      background: var(--caution-bg);
+      border: 1px solid var(--caution-border);
+      color: var(--caution-text);
+    }
+
+    .combo-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+
+    .combo-message {
+      font-size: 0.93rem;
+      font-weight: 500;
+      letter-spacing: 0.001em;
+    }
+
+    @keyframes rise-in {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .info-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1rem 1.1rem 0.35rem;
+      animation: rise-in 0.25s ease;
+    }
+
+    .info-card[hidden] {
+      display: none;
+    }
+
+    .info-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 0.55rem;
+    }
+
+    .info-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.7rem;
+      padding: 0.55rem 0;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .info-row:first-of-type {
+      border-top: none;
+    }
+
+    .info-row .info-name {
+      position: relative;
+      flex: 0 0 auto;
+      padding-left: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .info-row .info-name::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.42em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    .info-row .info-message {
+      color: var(--text-dim);
+    }
+
+    .disclaimer {
+      text-align: center;
+      font-size: 0.76rem;
+      color: var(--text-faint);
+      padding: 0.2rem 1rem 0;
     }
   </style>
 </head>
 <body>
-  <h1>Pill Detector — Live</h1>
-  <div id="status">connecting…</div>
-  <img id="stream" alt="live feed" />
+  <div class="page">
+    <div class="topbar">
+      <div class="brand">
+        <h1>Pill Detector</h1>
+        <span class="tagline">YOLOv8 실시간 영양제 인식 데모 · Jetson Nano</span>
+      </div>
+      <div class="status" id="status">
+        <span class="status-dot"></span>
+        <span id="status-text">connecting…</span>
+      </div>
+    </div>
+
+    <div class="frame-card">
+      <img id="stream" alt="live feed" />
+    </div>
+
+    <div class="combo-banner" id="combo-banner" hidden>
+      <span class="combo-icon" id="combo-icon"></span>
+      <span class="combo-message" id="combo-message"></span>
+    </div>
+
+    <div class="info-card" id="timing-card" hidden>
+      <span class="info-title">복용 타이밍 안내</span>
+      <div id="timing-list"></div>
+    </div>
+
+    <div class="info-card" id="dosage-card" hidden>
+      <span class="info-title">복용량 안내</span>
+      <div id="dosage-list"></div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠ 참고용 데모입니다 — 실제 복약 판단에 사용하지 마세요.
+    </div>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>
