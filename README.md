@@ -34,7 +34,7 @@ YOLOv8을 학습해 6종 알약을 실시간으로 탐지하고, Jetson Nano에�
 | 검증 mAP50 | **0.974** |
 | 검증 mAP50-95 | **0.803** |
 | 추론 플랫폼 | Jetson Nano (JetPack 4.6, t210ref) |
-| 실측 FPS | 초기 5~7fps → 1분 전후 3.3~4.3fps로 수렴 (대표값 약 3.5~4fps) |
+| 실측 FPS | 초기 5-7fps → 1분 전후 3.3-4.3fps로 수렴 (대표값 약 3.5-4fps) |
 | 웹 UI | FastAPI + WebSocket |
 
 클래스별 상세 지표(precision/recall/mAP), FPS 측정 방법론 3회 재현 결과는
