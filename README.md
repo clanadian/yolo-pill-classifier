@@ -83,6 +83,12 @@ Colab(T4 GPU)에서 돌리려면 `train_on_colab.ipynb`를 열어서 순서대�
 
 `best.pt`가 저장소 루트에 있어야 합니다.
 
+> Jetson Nano는 JetPack 버전 제약 때문에 `ultralytics`/`opencv-python`을
+> `requirements.txt`로 그냥 설치하기 어려운 경우가 많습니다. YOLOv8 추론이 이미
+> 되는 환경이라는 전제로, 여기서 새로 필요한 건 `fastapi`·`uvicorn[standard]`뿐입니다
+> (둘 다 `requirements.txt`에 포함되어 있음). 처음부터 새로 세팅해야 한다면
+> `stream/README.md`의 Jetson Nano 참고 사항을 먼저 보세요.
+
 ```bash
 python stream/server.py
 ```
