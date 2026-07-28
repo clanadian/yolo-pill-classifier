@@ -3,21 +3,13 @@
 YOLOv8을 학습해 6종 알약을 실시간으로 탐지하고, Jetson Nano에서 웹 인터페이스를
 통해 복용 정보와 조합 주의사항까지 제공하는 프로젝트입니다.
 
-## 프로젝트 개요
-
-- 사진 촬영 → 자동 bbox 라벨링 → 수동 검수 파이프라인
-- YOLOv8 학습 (로컬 GPU / Colab)
-- Jetson Nano 실시간 추론
-- FastAPI·WebSocket 기반 웹 스트리밍 UI
-- 복용 타이밍·복용량·조합 주의 안내
-
 ## 주요 기능
 
+- 사진 촬영 → 자동 bbox 라벨링 → 수동 검수 파이프라인
+- YOLOv8 학습 (로컬 GPU / Colab) → Jetson Nano 실시간 추론
 - ✅ 6종 알약 동시 탐지
-- ✅ 복용 조합 주의 배너
-- ✅ 복용량 안내
-- ✅ 복용 타이밍 안내
-- ✅ Jetson Nano 실시간 웹 스트리밍
+- ✅ 복용 조합 주의 배너 · 복용량 · 복용 타이밍 안내
+- ✅ FastAPI·WebSocket 기반 실시간 웹 스트리밍
 
 <video src="https://github.com/user-attachments/assets/9fc1c7e3-b32c-4d7b-946e-8a9aced14672" width="600" controls></video>
 
@@ -37,6 +29,8 @@ python stream/server.py --source <영상경로>
 
 | 항목 | 값 |
 |---|---|
+| 모델 | YOLOv8n |
+| 입력 해상도 | 640×640 |
 | 클래스 수 | 6종 |
 | 검증 mAP50 | 0.974 |
 | 검증 mAP50-95 | 0.803 |
@@ -49,9 +43,29 @@ python stream/server.py --source <영상경로>
 
 ## 아키텍처
 
-```
-사진 촬영 → 자동 라벨링(auto_label.py) → 수동 검수 → YOLOv8 학습(train_yolo.py)
-   → weights/best.pt → Jetson Nano 추론(stream/server.py) → 웹 브라우저(FastAPI·WebSocket)
+```text
+사진 촬영
+    │
+    ▼
+자동 bbox 라벨링 (auto_label.py)
+    │
+    ▼
+수동 검수
+    │
+    ▼
+YOLOv8 학습 (train_yolo.py)
+    │
+    ▼
+weights/best.pt
+    │
+    ▼
+Jetson Nano 추론 (stream/server.py)
+    │
+    ▼
+FastAPI + WebSocket
+    │
+    ▼
+웹 브라우저
 ```
 
 ## 클래스 (6종, id 0~5)
@@ -178,5 +192,14 @@ Colab(T4 GPU)에서 돌리려면 `notebooks/train_on_colab.ipynb`를 열어서 �
 
 ## 역할 분담
 
-- **데이터 파이프라인** : 촬영, 라벨링/전처리(`preprocess/`), 색감 보정, 데이터셋 구성(`dataset/`, `data.yaml`)
-- **모델 학습·배포** : 학습(`train/`), Jetson Nano 배포, 실시간 웹 데모(`stream/`), 조합 안내 배너
+**데이터 파이프라인**
+- 알약 촬영 및 자동 bbox 라벨링(`preprocess/auto_label.py`)
+- 저대비/오탐 라벨 수동 검수·보정
+- 클래스별 색감 보정 LUT(`preprocess/color_fix/`)
+- 데이터셋 구성 및 train/val 분리(`dataset/`, `data.yaml`)
+
+**모델 학습·배포**
+- YOLOv8 학습 파이프라인(`train/train_yolo.py`)
+- Jetson Nano 배포
+- FastAPI 웹 데모(`stream/`)
+- 복용 정보(타이밍·복용량·조합 주의) UI 구현
