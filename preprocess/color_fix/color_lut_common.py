@@ -100,15 +100,15 @@ def is_black_bg(img: np.ndarray, threshold: float = 80.0) -> bool:
     return float(np.mean([c.mean() for c in corners])) < threshold
 
 
-def run(class_name: str, color_stem: str, color_dir: str = "../COLOR",
-        dataset_dir: str = "../dataset/images", output_dir: str = None,
+def run(class_name: str, color_stem: str, color_dir: str = "../../COLOR",
+        dataset_dir: str = "../../dataset/images", output_dir: str = None,
         bg_threshold: float = 80.0) -> None:
     pair = find_pair(color_dir, color_stem)
     luts = fit_lut([pair])
     print(f"[{class_name}] LUT 학습 완료 ({color_stem}), 검증:")
     validate(luts, [pair])
 
-    output_dir = output_dir or f"../color_fixed/{class_name}"
+    output_dir = output_dir or f"../../color_fixed/{class_name}"
     os.makedirs(output_dir, exist_ok=True)
 
     paths = sorted(
