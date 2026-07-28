@@ -6,11 +6,34 @@ YOLOv8을 학습시킨 뒤, Jetson Nano에서 웹캠 영상에 실시간으로 �
 
 <video src="https://github.com/user-attachments/assets/9fc1c7e3-b32c-4d7b-946e-8a9aced14672" width="600" controls></video>
 
+**실시간 탐지 데모** — 웹캠으로 여러 알약을 동시에 인식해 종류·이름을 표시합니다.
+카메라 대신 저장된 영상 파일(`stream/server.py --source <영상경로>`)로도 분석할 수 있습니다.
+
+![전체 기능 스크린샷](demo/all.png)
+
+6종 동시 탐지, 조합 주의 배너, 복용 타이밍/복용량 안내까지 한 화면에서 확인할 수
+있습니다. 다른 조합 예시는 [`demo/`](demo/) 폴더 참고.
+
 ## 클래스 (6종, id 0~5)
 
-| 0 capsule | 1 green_caplet | 2 mint_circle | 3 pink_caplet | 4 white_caplet | 5 yellow_caplet |
-|---|---|---|---|---|---|
-| ![capsule](docs/images/capsule_thumb.jpg) | ![green_caplet](docs/images/green_caplet_thumb.jpg) | ![mint_circle](docs/images/mint_circle_thumb.jpg) | ![pink_caplet](docs/images/pink_caplet_thumb.jpg) | ![white_caplet](docs/images/white_caplet_thumb.jpg) | ![yellow_caplet](docs/images/yellow_caplet_thumb.jpg) |
+<table>
+<tr>
+<th width="16.6%">0 capsule</th>
+<th width="16.6%">1 green_caplet</th>
+<th width="16.6%">2 mint_circle</th>
+<th width="16.6%">3 pink_caplet</th>
+<th width="16.6%">4 white_caplet</th>
+<th width="16.6%">5 yellow_caplet</th>
+</tr>
+<tr>
+<td><img src="docs/images/capsule_thumb.jpg" width="100%"></td>
+<td><img src="docs/images/green_caplet_thumb.jpg" width="100%"></td>
+<td><img src="docs/images/mint_circle_thumb.jpg" width="100%"></td>
+<td><img src="docs/images/pink_caplet_thumb.jpg" width="100%"></td>
+<td><img src="docs/images/white_caplet_thumb.jpg" width="100%"></td>
+<td><img src="docs/images/yellow_caplet_thumb.jpg" width="100%"></td>
+</tr>
+</table>
 
 ## 폴더 구조
 
@@ -110,3 +133,8 @@ Jetson Nano 세팅, 옵션, 성능 관련 참고사항은 `stream/README.md`를 
 - [docs/pill_combo_plan.md](docs/pill_combo_plan.md) — 알약 조합 안내 배너 기능(좋은
   조합/확인 필요 조합) 기획서. `stream/combos.json`·`timing.json`·`dosage.json`으로
   구현 완료
+
+## 역할 분담
+
+- **데이터 파이프라인** (본인): 촬영, 라벨링/전처리(`preprocess/`), 색감 보정, 데이터셋 구성(`dataset/`, `data.yaml`)
+- **모델 학습·배포** (팀원): 학습(`train/`), Jetson Nano 배포, 실시간 웹 데모(`stream/`), 조합 안내 배너
