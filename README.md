@@ -34,11 +34,11 @@ YOLOv8을 학습해 6종 알약을 실시간으로 탐지하고, Jetson Nano에�
 | 검증 mAP50 | **0.974** |
 | 검증 mAP50-95 | **0.803** |
 | 추론 플랫폼 | Jetson Nano (JetPack 4.6, t210ref) |
-| 실측 FPS | 초기 5~7fps → 1분 전후 3.3~4.3fps로 수렴 (대표값 약 3.5~4fps) |
+| 실측 FPS | 초기 5-7fps → 약 1분 후 평균 3.8fps 수준으로 안정화 (대표값 약 3.5-4fps) |
 | 웹 UI | FastAPI + WebSocket |
 
 클래스별 상세 지표(precision/recall/mAP), FPS 측정 방법론 3회 재현 결과는
-[docs/report.md](docs/report.md) 5~6번 항목 참고.
+[docs/report.md](docs/report.md) 5-6번 항목 참고.
 
 ## 아키텍처
 
@@ -70,7 +70,7 @@ FastAPI + WebSocket
 웹 브라우저
 ```
 
-## 클래스 (6종, id 0~5)
+## 클래스 (6종, id 0-5)
 
 <table>
 <tr>
@@ -143,7 +143,7 @@ python preprocess/split_and_build.py --input_dir <원본사진폴더> --output_d
 ---
 
 > **아래 데모/학습 파트는 2026-07-28 기준 실제로 동작·수치를 검증했습니다**
-> (모델 지표 재현, Jetson Nano 실측 FPS, 데이터셋 무결성 — `docs/report.md` 5~7번
+> (모델 지표 재현, Jetson Nano 실측 FPS, 데이터셋 무결성 — `docs/report.md` 5-7번
 > 항목). 다만 팀원이 계속 다듬고 있는 영역이라 세부 옵션은 이 문서보다 앞서
 > 바뀔 수 있습니다.
 
@@ -202,7 +202,7 @@ Colab(T4 GPU)에서 돌리려면 `notebooks/train_on_colab.ipynb`를 열어서 �
 - 흰 배경·흰 알약 조합에서 자동 라벨링이 "성공"으로 뜨면서도 조용히 실패하는 문제를
   발견 → 검증 필터 추가, 잔여 케이스는 수동 검수로 보완
 - 조명 조건에 따라 흰색·핑크 알약이 서로 오분류되는 문제를 클래스별 색감 보정(LUT)으로 개선
-- Jetson Nano 장시간 구동 시 FPS가 3.3~4.3으로 수렴하는 현상을 3회 재현 측정,
+- Jetson Nano 장시간 구동 시 FPS가 3.3-4.3으로 수렴하는 현상을 3회 재현 측정,
   열 스로틀링이 아님을 확인
 
 자세한 원인 분석과 해결 과정은 [docs/report.md](docs/report.md)에 정리했습니다.
@@ -219,7 +219,7 @@ Colab(T4 GPU)에서 돌리려면 `notebooks/train_on_colab.ipynb`를 열어서 �
   데이터 일관성 문제로 제외됨 ([docs/report.md](docs/report.md) 2번 항목)
 - 단일 카메라·한정된 촬영 환경(조명/배경)에서 수집한 데이터라 일반화에 한계 있음 —
   `white_caplet`은 색감 보정 후에도 mAP50-95 0.645로 전 클래스 중 최저, 잔여 약점으로 남음
-- Jetson Nano에서는 실시간성이 제한적(약 3.5~4fps) — TensorRT 변환이나 더 가벼운
+- Jetson Nano에서는 실시간성이 제한적(약 3.5-4fps) — TensorRT 변환이나 더 가벼운
   모델로 개선 여지 있음 ([stream/README.md](stream/README.md) 참고, 자동화는 안 돼있음)
 
 ## 역할 분담

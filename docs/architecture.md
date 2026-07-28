@@ -46,7 +46,7 @@ runs/pill_yolo/weights/best.pt
 (optimizer strip)
 
 weights/best.pt
-(배포용, ~6MB)
+(배포용, 약 6MB)
 
 USB 웹캠
 
