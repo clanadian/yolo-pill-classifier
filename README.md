@@ -11,9 +11,24 @@ YOLOv8을 학습시킨 뒤, Jetson Nano에서 웹캠 영상에 실시간으로 �
 
 ## 클래스 (6종, id 0~5)
 
-| 0 capsule | 1 green_caplet | 2 mint_circle | 3 pink_caplet | 4 white_caplet | 5 yellow_caplet |
-|---|---|---|---|---|---|
-| ![capsule](docs/images/capsule_thumb.jpg) | ![green_caplet](docs/images/green_caplet_thumb.jpg) | ![mint_circle](docs/images/mint_circle_thumb.jpg) | ![pink_caplet](docs/images/pink_caplet_thumb.jpg) | ![white_caplet](docs/images/white_caplet_thumb.jpg) | ![yellow_caplet](docs/images/yellow_caplet_thumb.jpg) |
+<table>
+<tr>
+<th width="16.6%">0 capsule</th>
+<th width="16.6%">1 green_caplet</th>
+<th width="16.6%">2 mint_circle</th>
+<th width="16.6%">3 pink_caplet</th>
+<th width="16.6%">4 white_caplet</th>
+<th width="16.6%">5 yellow_caplet</th>
+</tr>
+<tr>
+<td><img src="docs/images/capsule_thumb.jpg" width="100%"></td>
+<td><img src="docs/images/green_caplet_thumb.jpg" width="100%"></td>
+<td><img src="docs/images/mint_circle_thumb.jpg" width="100%"></td>
+<td><img src="docs/images/pink_caplet_thumb.jpg" width="100%"></td>
+<td><img src="docs/images/white_caplet_thumb.jpg" width="100%"></td>
+<td><img src="docs/images/yellow_caplet_thumb.jpg" width="100%"></td>
+</tr>
+</table>
 
 ## 폴더 구조
 
