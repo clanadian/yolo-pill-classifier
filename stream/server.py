@@ -36,25 +36,35 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MODEL = REPO_ROOT / "best.pt"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 DEFAULT_COMBOS = Path(__file__).resolve().parent / "combos.json"
+DEFAULT_TIMINGS = Path(__file__).resolve().parent / "timing.json"
 
-# 조합이 한두 프레임 안 잡혀도 배너가 바로 꺼지지 않게 유지하는 시간(초).
-# 탐지가 프레임마다 깜빡이는 것 때문에 배너가 같이 깜빡이는 걸 완화한다.
-COMBO_HOLD_SECS = 1.5
+# 감지가 한두 프레임 안 잡혀도 배너/타이밍 안내가 바로 꺼지지 않게 유지하는
+# 시간(초). 탐지가 프레임마다 깜빡이는 것 때문에 화면이 같이 깜빡이는 걸
+# 완화한다.
+DETECTION_HOLD_SECS = 1.5
+
+
+def _load_json_rules(path: Path, label: str):
+    """stream/combos.json, stream/timing.json 공용 로더.
+
+    파일이 없거나 비어 있어도 에러 없이 빈 값을 돌려주고, 그 경우 해당
+    기능은 꺼진 채로 나머지 스트리밍은 정상 동작한다.
+    """
+    if not path.exists():
+        print(f"[stream] {label} 파일 없음({path}) — 해당 기능 비활성화")
+        return None
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    print(f"[stream] {label} 로드: {path}")
+    return data
 
 
 def load_combo_rules(path: Path):
-    """stream/combos.json을 읽어 조합 배너 규칙 목록을 돌려준다.
+    return _load_json_rules(path, "combos") or []
 
-    파일이 없거나 비어 있어도 에러 없이 빈 목록을 돌려주고, 그 경우 조합
-    배너 기능은 그냥 꺼진 채로 나머지 스트리밍은 정상 동작한다.
-    """
-    if not path.exists():
-        print(f"[stream] combos 파일 없음({path}) — 조합 배너 기능 비활성화")
-        return []
-    with open(path, encoding="utf-8") as f:
-        rules = json.load(f)
-    print(f"[stream] combos 로드: {len(rules)}개 규칙 ({path})")
-    return rules
+
+def load_timing_rules(path: Path):
+    return _load_json_rules(path, "timing") or {}
 
 
 def match_combo(detected_classes, rules):
@@ -88,26 +98,27 @@ class FrameBroadcaster:
     def __init__(self):
         self.latest = None  # type: Optional[bytes]
         self.combo = None  # type: Optional[dict]
+        self.timings = []  # type: list
         self.frame_id = 0
         self._lock = threading.Lock()
 
-    def publish(self, jpeg_bytes, combo):
+    def publish(self, jpeg_bytes, combo, timings):
         with self._lock:
             self.latest = jpeg_bytes
             self.combo = combo
+            self.timings = timings
             self.frame_id += 1
 
     def snapshot(self):
         with self._lock:
-            return self.latest, self.combo, self.frame_id
+            return self.latest, self.combo, self.timings, self.frame_id
 
 
-def capture_loop(cap, model, broadcaster, args, rules, stop_event):
+def capture_loop(cap, model, broadcaster, args, combo_rules, timing_rules, stop_event):
     """카메라 읽기 + 추론을 반복하는 블로킹 루프. 별도 스레드에서 돈다."""
     frame_count = 0
     window_start = time.monotonic()
-    active_combo = None
-    active_last_seen = 0.0
+    last_seen = {}  # 클래스 이름 -> 마지막으로 감지된 monotonic 시각
 
     while not stop_event.is_set():
         ok, frame = cap.read()
@@ -121,18 +132,25 @@ def capture_loop(cap, model, broadcaster, args, rules, stop_event):
         annotated, classes = infer_and_annotate(model, frame, conf=args.conf, iou=args.iou)
 
         now = time.monotonic()
-        matched = match_combo(classes, rules)
-        if matched is not None:
-            active_combo = matched
-            active_last_seen = now
-        elif active_combo is not None and now - active_last_seen > COMBO_HOLD_SECS:
-            active_combo = None
+        for c in classes:
+            last_seen[c] = now
+        # 최근 DETECTION_HOLD_SECS 이내에 본 클래스만 "현재 감지 중"으로 취급
+        # (프레임마다 탐지가 깜빡이는 걸 완화). 오래된 항목은 같이 정리한다.
+        last_seen = {c: t for c, t in last_seen.items() if now - t <= DETECTION_HOLD_SECS}
+        stable_classes = set(last_seen.keys())
+
+        active_combo = match_combo(stable_classes, combo_rules)
+        active_timings = [
+            {"class": c, "message": timing_rules[c]}
+            for c in sorted(stable_classes)
+            if c in timing_rules
+        ]
 
         ok2, buf = cv2.imencode(
             ".jpg", annotated, [cv2.IMWRITE_JPEG_QUALITY, args.jpeg_quality]
         )
         if ok2:
-            broadcaster.publish(buf.tobytes(), active_combo)
+            broadcaster.publish(buf.tobytes(), active_combo, active_timings)
 
         # 체감이 아니라 수치로 FPS를 확인할 수 있게 주기적으로 로그를 남긴다
         # (Jetson Nano처럼 느린 보드에서 기대치와 비교하기 위함).
@@ -160,11 +178,12 @@ def create_app(args) -> FastAPI:
         if not cap.isOpened():
             raise RuntimeError(f"카메라를 열 수 없습니다: {args.source}")
 
-        rules = load_combo_rules(args.combos)
+        combo_rules = load_combo_rules(args.combos)
+        timing_rules = load_timing_rules(args.timings)
 
         thread = threading.Thread(
             target=capture_loop,
-            args=(cap, model, broadcaster, args, rules, stop_event),
+            args=(cap, model, broadcaster, args, combo_rules, timing_rules, stop_event),
             daemon=True,
         )
         thread.start()
@@ -187,20 +206,23 @@ def create_app(args) -> FastAPI:
     async def ws_endpoint(ws: WebSocket):
         await ws.accept()
         last_id = -1
-        last_combo_sent = "__unset__"  # combo(dict)/None과 절대 같을 수 없는 초기값
+        last_sent = "__unset__"  # (combo, timings)와 절대 같을 수 없는 초기값
         interval = 1.0 / args.max_fps
         try:
             while True:
                 await asyncio.sleep(interval)
-                jpeg, combo, frame_id = broadcaster.snapshot()
+                jpeg, combo, timings, frame_id = broadcaster.snapshot()
                 if jpeg is None or frame_id == last_id:
                     continue
-                # 배너 상태가 바뀔 때만 텍스트 프레임을 추가로 보낸다(느린 보드/
-                # 네트워크에서 불필요한 전송을 줄이기 위함). 클라이언트는
-                # 문자열 메시지는 배너 갱신으로, 바이너리 메시지는 이미지로 처리한다.
-                if combo != last_combo_sent:
-                    await ws.send_text(json.dumps({"combo": combo}, ensure_ascii=False))
-                    last_combo_sent = combo
+                # 배너/타이밍 상태가 바뀔 때만 텍스트 프레임을 추가로 보낸다
+                # (느린 보드/네트워크에서 불필요한 전송을 줄이기 위함). 클라이언트는
+                # 문자열 메시지는 UI 갱신으로, 바이너리 메시지는 이미지로 처리한다.
+                current = (combo, timings)
+                if current != last_sent:
+                    await ws.send_text(
+                        json.dumps({"combo": combo, "timings": timings}, ensure_ascii=False)
+                    )
+                    last_sent = current
                 await ws.send_bytes(jpeg)
                 last_id = frame_id
         except WebSocketDisconnect:
@@ -250,6 +272,10 @@ def parse_args():
     parser.add_argument(
         "--combos", type=Path, default=DEFAULT_COMBOS,
         help="조합 배너 규칙 파일 경로 (기본: stream/combos.json, 없으면 기능 비활성화)",
+    )
+    parser.add_argument(
+        "--timings", type=Path, default=DEFAULT_TIMINGS,
+        help="복용 타이밍 안내 파일 경로 (기본: stream/timing.json, 없으면 기능 비활성화)",
     )
     return parser.parse_args()
 
