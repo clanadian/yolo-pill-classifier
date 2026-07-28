@@ -14,11 +14,8 @@ YOLOv8을 학습해 6종 알약을 실시간으로 탐지하고, Jetson Nano에�
 <video src="https://github.com/user-attachments/assets/9fc1c7e3-b32c-4d7b-946e-8a9aced14672" width="600" controls></video>
 
 **실시간 탐지 데모** — 웹캠으로 여러 알약을 동시에 인식해 종류·이름을 표시합니다.
-실시간 웹캠뿐 아니라 저장된 영상 파일도 분석할 수 있습니다.
-
-```bash
-python stream/server.py --source <영상경로>
-```
+실시간 웹캠뿐 아니라 저장된 영상 파일도 분석할 수 있습니다 (실행 방법은 아래
+[실시간 데모](#실시간-데모-jetson-nano) 참고).
 
 ![전체 기능 스크린샷](demo/all.png)
 
@@ -108,13 +105,17 @@ FastAPI + WebSocket
 └── requirements.txt
 ```
 
-## 설치
+## 설치 (로컬 PC — 전처리/학습용)
 
 ```bash
 conda create -n yolo python=3.10 -y
 conda activate yolo
 pip install -r requirements.txt
 ```
+
+Jetson Nano(ARM64, JetPack 4.6 · Python 3.6 베이스)는 이 conda 환경을 그대로 쓸 수
+없습니다. Jetson 쪽 세팅은 [실시간 데모](#실시간-데모-jetson-nano) 섹션과
+[stream/README.md](stream/README.md)를 따로 참고하세요.
 
 ## 데이터셋 파이프라인 (전처리/라벨링)
 
@@ -143,7 +144,8 @@ python preprocess/split_and_build.py --input_dir <원본사진폴더> --output_d
 
 ## 실시간 데모 (Jetson Nano)
 
-`weights/best.pt`가 있어야 합니다.
+학습된 가중치 `weights/best.pt`가 저장소에 일반 파일로 포함되어 있어(Git LFS
+아님, clone하면 바로 받아짐) 따로 학습하지 않아도 바로 실행할 수 있습니다.
 
 > Jetson Nano는 JetPack 버전 제약 때문에 `ultralytics`/`opencv-python`을
 > `requirements.txt`로 그냥 설치하기 어려운 경우가 많습니다. YOLOv8 추론이 이미
