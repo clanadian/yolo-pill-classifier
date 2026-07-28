@@ -32,3 +32,73 @@
 - **최종 추가분**: 흰 배경 120장(본인) + 검은 배경 120장(팀원) + 네거티브 20장(배경만, 빈 라벨) — 전부 수동 검수 후 병합.
   - 병합 중 팀원 배치가 두 경로(최상위 폴더 + `dataset_black/` 서브폴더)에 중복 존재해 한 번 겹쳐 들어갈 뻔함 → md5 확인 후 정리, 단일 소스로 재병합. 이후 파일명 전체를 클래스별 순번으로 재정렬.
 - **병합 후 최종 장수**: capsule 149 / green_caplet 188 / mint_circle 169 / pink_caplet 186 / white_caplet 181 / yellow_caplet 187 / neg_black 15 / neg_white 5 (train 919 / val 161).
+
+## 5. 최종 모델 검증 결과 (2026-07-28)
+- **명령어**: `yolo val model=weights/best.pt data=dataset/data.yaml imgsz=640` (GTX 1660, val 161장)
+- **전체**: precision 0.934 / recall 0.973 / mAP50 0.974 / mAP50-95 0.803
+- **클래스별**:
+
+  | 클래스 | P | R | mAP50 | mAP50-95 |
+  |---|---|---|---|---|
+  | capsule | 0.923 | 1.000 | 0.995 | 0.821 |
+  | green_caplet | 0.950 | 1.000 | 0.995 | 0.870 |
+  | mint_circle | 0.934 | 0.960 | 0.929 | 0.788 |
+  | pink_caplet | 0.961 | 1.000 | 0.995 | 0.831 |
+  | white_caplet | 0.960 | 0.889 | 0.947 | 0.645 |
+  | yellow_caplet | 0.874 | 0.990 | 0.985 | 0.865 |
+
+- **확인**: `white_caplet`이 recall·mAP50-95 모두 최하위 — 3번 항목(색감 보정)에서 다룬 조명 조건 오분류 문제가 LUT 보정 후에도 완전히 해결되진 않고 잔여 약점으로 남아있음을 수치로 확인.
+- **추론 속도**: GTX 1660 기준 5.0ms/image (preprocess 1.0ms + inference 5.0ms + postprocess 0.8ms). 실제 배포 타깃인 Jetson Nano에서는 훨씬 느림 — 실측 로그는 6번 항목 참고.
+- 산출물(confusion matrix 등)은 `runs/detect/runs/val_report/`에 저장됨.
+
+  | Confusion Matrix | Normalized |
+  |---|---|
+  | ![confusion matrix](images/confusion_matrix.png) | ![confusion matrix normalized](images/confusion_matrix_normalized.png) |
+
+## 6. Jetson Nano 실측 FPS (2026-07-28)
+- **보드**: Jetson Nano, L4T R32.6.1(JetPack 4.6 계열), USB 웹캠 `/dev/video0`(YUYV, 640x480 최대 30fps 지원 — 카메라 자체는 병목이 아님).
+- **명령어**: `python3 -u stream/server.py --width 480 --height 360 --max-fps 5` (`weights/best.pt`, `yolo_v8` venv: torch 1.13.0a0 CUDA, ultralytics 8.3.0, opencv 5.0.0).
+- **측정 방식**: `stream/server.py`의 `capture_loop`가 5초 창마다 콘솔에 찍는 `[stream] inference fps` 로그를 그대로 캡처. 이 수치는 웹소켓 전송 제한(`--max-fps`)과 무관하게 카메라 읽기+YOLO 추론 자체의 실측 처리량이다. 두 번째 실행(120초 연속 구동)에서는 `tegrastats --interval 1000`을 같이 돌려 온도/CPU·GPU 사용률/RAM을 함께 기록했고, 브라우저(`http://<보드IP>:8000/`)로 실제 알약이 잡히는 것도 육안 확인했다.
+- **전력/클럭 상태**: `nvpmodel -q` → MAXN(최대 성능 모드). `jetson_clocks --show` → CPU 4코어 전부 1479MHz 고정(Min=Max=Current), GPU 921.6MHz 고정, EMC 1.6GHz 고정 — 클럭은 이미 최대치라 설정으로 더 끌어올릴 여지 없음.
+- **1차 결과 (10초, 2개 창)**: 안정화 후 **5.2fps**로 일관되게 기록. 짧은 구간이라 과도기 값이었을 가능성.
+- **2차 결과 (120초 연속 구동, 19개 창)**: 시작 직후 6.9~7.3fps → 점진적으로 하락 → 약 70초 지점부터 **3.7~3.8fps로 수렴**. 19개 창 평균 4.9fps, 최소 3.7fps, 최대 7.3fps.
+- **온도/GPU 사용률**: GPU 26→29.5°C, CPU 패키지 27→30.5°C로 거의 안 오름 — 열 스로틀링 아님. `GR3D_FREQ`(GPU 사용률)는 120개 샘플 중 70개가 0%이고 나머지가 94~99% 스파이크인 버스티 패턴 — GPU 연산 자체는 대부분 놀고 있어 순수 GPU 컴퓨트가 병목은 아님(카메라 읽기/전처리/JPEG 인코딩 등 CPU 구간이 상대적으로 더 크게 기여하는 것으로 추정).
+- **RAM**: 1.3GB(전체 3.96GB 중)에서 시작해 약 20초 만에 **3.16GB(80%)까지 상승 후 그 뒤로는 계속 그 수준에서 유지**(계속 늘어나진 않지만 줄지도 않음). 단, FPS 하락은 RAM이 평평해진 뒤로도 약 50초 더 이어졌으므로 RAM 상승만으로 fps 하락을 완전히 설명하긴 어려움 — 상관관계만 확인, 정확한 원인(메모리 압박/GC/버퍼 누적 등)은 미확정.
+- **육안 확인**: 브라우저 접속 시 실제 웹캠 영상에 알약 bbox+라벨이 정상적으로 표시되는 것을 확인함(2026-07-28).
+- **정정**: 5번 항목에 적었던 "체감 1~3FPS" 추정치보다는 안정적으로 높지만, 짧은 구간(5.2fps)만 보고하면 낙관적인 수치가 된다 — 장시간 구동 기준으로는 **약 3.7~4fps가 더 현실적인 대표값**. README/보고서의 추정치 표현은 이 실측값으로 교체 필요.
+- **다음 할 일**: RAM이 80%까지 오른 뒤 fps가 계속 떨어지는 원인 프로파일링(예: 프레임마다 `gc.collect()` 강제, torch/opencv 버퍼 재사용 여부 점검, 장시간 재구동 시 RAM이 다시 초기화되는지 확인).
+- **트러블슈팅**: 첫 시도에서 `cap.read()`는 정상인데도 FPS 로그가 전혀 안 찍혀서 원인 확인 결과, non-tty(SSH 비대화형 실행) 환경에서 Python stdout이 풀 버퍼링되고 `timeout`이 SIGTERM으로 프로세스를 끊으면서 버퍼가 플러시되지 않아 `print()` 출력이 통째로 유실됐던 것으로 확인. `python3 -u`(unbuffered)로 재실행해 해결. 이런 식으로 원격/비대화형 실행 시 로그 캡처가 필요하면 `-u` 또는 `PYTHONUNBUFFERED=1`을 기본으로 붙이는 게 안전.
+
+## 7. 데이터셋/모델 무결성 검증 (2026-07-28)
+1번·4번 항목에서 다룬 auto_label.py 실패(전경/배경 혼동, boundingRect 미검증)를 수작업으로
+고친 뒤, 그 수정이 최종 데이터셋에 실제로 빠짐없이 반영됐는지 별도 스크립트와 프로젝트
+자체 검사 도구 두 가지로 교차 확인했다.
+
+- **클래스별 장수 재검산**: `dataset/images,labels/{train,val}`을 직접 스캔한 결과 —
+  train 919(capsule 127/green_caplet 160/mint_circle 144/pink_caplet 158/white_caplet 154/
+  yellow_caplet 159/neg_black 13/neg_white 4), val 161(22/28/25/28/27/28/neg_black 2/neg_white 1).
+  4번 항목·`docs/update.md`에 적힌 합계(149/188/169/186/181/187/15/5, train 919/val 161)와 **정확히 일치**.
+- **라벨 좌표/클래스 id 유효성**: 전체 라벨 파일을 파싱해 필드 수(5개), class id 범위(0~5),
+  좌표 정규화 범위(0~1) 검사 — **이상 0건**.
+- **auto_label 실패 패턴 잔존 여부**: bbox 면적이 이미지의 85% 이상을 덮는 라벨(1번 항목에서
+  발견된 "박스가 배경/이미지 전체를 잡는" 실패 시그니처)을 전수 스캔 — **잔존 0건**. 수작업
+  보정이 실제로 문제를 다 잡았음을 확인.
+- **네거티브 샘플 규칙**: `neg_black_*`/`neg_white_*` 파일은 전부 빈 라벨, 그 외 파일 중 빈
+  라벨은 0건 — `docs/update.md`에 적힌 "네거티브만 빈 라벨 허용" 규칙과 일치.
+- **train/val 교차 중복(데이터 누수) 검사**: 전체 이미지 MD5 체크섬 비교 — train/val 교차
+  중복 0건, 동일 split 내 중복도 0건. 4번 항목에서 있었던 "팀원 배치 중복 병합" 사고가
+  최종 데이터셋에는 남아있지 않음을 확인.
+- **`train/train_yolo.py`의 `preflight()` 자체 검사와 교차 검증**: 학습을 실제로 돌리지 않고
+  `preflight(Path("dataset"))`만 직접 호출 — 위 스캔과 동일한 카운트를 출력하며 예외 없이 통과.
+  `docs/update.md`에서 팀원에게 요청했던 "`neg_` 접두사는 빈 라벨 예외 처리" 로직도
+  (`train/train_yolo.py:52-171`, `NEG_PREFIX` 처리) 이미 반영되어 있음을 코드로 확인.
+- **5번 항목 검증 지표 재현**: `yolo val model=weights/best.pt data=dataset/data.yaml imgsz=640`을
+  다시 돌려 precision/recall/mAP50/mAP50-95와 클래스별 세부 수치까지 5번 항목과 **소수점까지
+  동일하게 재현**됨을 확인(우연이 아니라 결정적으로 재현 가능한 결과임을 뜻함).
+- **모델 파일 일치성**: 위 정확도 재현에 쓴 로컬 `weights/best.pt`와 6번 항목 Jetson FPS 측정에
+  쓰인 Jetson `~/yolo-pill-classifier/weights/best.pt`의 MD5 체크섬이 동일
+  (`de7077d07527323994b2d068aac0204a`) — 정확도 수치와 FPS 수치가 서로 다른 모델을 가리키고
+  있을 위험 없음.
+- **결론**: 수작업 라벨 보정이 "그때 눈으로 확인한 몇 장"이 아니라 최종 데이터셋 전체에
+  걸쳐 빠짐없이 반영되어 있음을 정량적으로 확인. 기술서에는 "수작업으로 보정했다"뿐 아니라
+  이 무결성 검증 결과(이슈 0건, 카운트 일치, 누수 0건, 지표 재현)를 근거로 같이 제시 가능.
