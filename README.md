@@ -22,7 +22,10 @@ YOLOv8을 학습시킨 뒤, Jetson Nano에서 웹캠 영상에 실시간으로 �
 ├── dataset/              # 학습용 최종 데이터셋 (images/labels train,val + data.yaml)
 ├── preprocess/           # 라벨링 파이프라인: auto_label.py, split_and_build.py
 ├── train/                # 학습 스크립트: train_yolo.py
-├── train_on_colab.ipynb  # Colab(T4 GPU)에서 학습하고 싶을 때
+├── notebooks/
+│   └── train_on_colab.ipynb  # Colab(T4 GPU)에서 학습하고 싶을 때
+├── weights/
+│   └── best.pt           # 학습된 가중치 (--export-best로 생성, 데모가 읽는 기본 경로)
 ├── stream/               # Jetson Nano 실시간 웹 스트리밍 데모
 ├── docs/
 │   ├── report.md         # 트러블슈팅 로그 (문제/원인/조치 기록)
@@ -74,15 +77,15 @@ python train/train_yolo.py --device 0 --export-best
 탐지하고, 학습 전에 라벨/클래스 정합성을 먼저 검사합니다. 자세한 옵션은
 `python train/train_yolo.py --help` 참고.
 
-Colab(T4 GPU)에서 돌리려면 `train_on_colab.ipynb`를 열어서 순서대로 실행하면 됩니다
-(저장소를 clone하면 코드와 `dataset/`이 같이 받아짐).
+Colab(T4 GPU)에서 돌리려면 `notebooks/train_on_colab.ipynb`를 열어서 순서대로
+실행하면 됩니다(저장소를 clone하면 코드와 `dataset/`이 같이 받아짐).
 
-학습이 끝나면 `runs/`에 결과가 저장되고, `--export-best`를 주면 `best.pt`가 저장소
-루트로 복사됩니다.
+학습이 끝나면 `runs/`에 결과가 저장되고, `--export-best`를 주면 `weights/best.pt`로
+복사됩니다.
 
 ## 실시간 데모 (Jetson Nano)
 
-`best.pt`가 저장소 루트에 있어야 합니다.
+`weights/best.pt`가 있어야 합니다.
 
 > Jetson Nano는 JetPack 버전 제약 때문에 `ultralytics`/`opencv-python`을
 > `requirements.txt`로 그냥 설치하기 어려운 경우가 많습니다. YOLOv8 추론이 이미

@@ -20,8 +20,8 @@ data.yaml의 `path`는 만든 사람 컴퓨터의 절대경로로 박혀 있어 
     # 빠른 동작 확인 (2 epoch만)
     python train/train_yolo.py --epochs 2 --name smoke
 
-학습이 끝나면 best.pt 위치를 출력하고, --export-best를 주면 저장소 루트에
-best.pt로 복사합니다 (yolov8_cam.py가 루트의 best.pt를 그대로 읽음).
+학습이 끝나면 best.pt 위치를 출력하고, --export-best를 주면 weights/best.pt로
+복사합니다 (stream/server.py가 이 경로를 기본값으로 읽음).
 """
 
 import argparse
@@ -261,7 +261,7 @@ def main():
     parser.add_argument(
         "--export-best",
         action="store_true",
-        help="학습 후 best.pt를 저장소 루트로 복사 (yolov8_cam.py용)",
+        help="학습 후 best.pt를 weights/ 폴더로 복사 (stream/server.py 기본 경로)",
     )
     args = parser.parse_args()
 
@@ -316,9 +316,10 @@ def main():
 
         if args.export_best:
             if best_pt.exists():
-                dest = REPO_ROOT / "best.pt"
+                dest = REPO_ROOT / "weights" / "best.pt"
+                dest.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(best_pt, dest)
-                print(f"best.pt를 저장소 루트로 복사했습니다: {dest}")
+                print(f"best.pt를 weights/ 폴더로 복사했습니다: {dest}")
             else:
                 print(f"[경고] best.pt를 찾을 수 없어 복사하지 못했습니다: {best_pt}")
     finally:

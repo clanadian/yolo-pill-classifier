@@ -7,7 +7,7 @@ USB 웹캠 영상에 YOLO 탐지 결과(bbox+라벨)를 입혀 WebSocket으로 �
 
 ## 실행
 
-`best.pt`가 저장소 루트에 있어야 한다(`train/train_yolo.py --export-best`로 생성).
+`weights/best.pt`가 있어야 한다(`train/train_yolo.py --export-best`로 생성).
 
 ```bash
 pip install -r requirements.txt   # fastapi, uvicorn[standard] 포함
