@@ -58,18 +58,34 @@ def is_background_dark(img, border=15):
     return corners.mean() < 127
 
 
+def flatten_background(gray):
+    """배경 조명 그라데이션 보정(shading correction).
+
+    웹캠 사진처럼 배경 밝기가 한쪽으로 완만하게 기울어져 있으면, 전역 Otsu
+    임계값 하나로는 그라데이션의 어두운 절반이 통째로 전경(알약)으로 잡혀버림.
+    큰 커널 median blur로 "알약을 뺀 배경의 완만한 밝기 변화"만 추정한 뒤 원본에서
+    빼면, 배경은 어디서나 128 근처로 평평해지고 알약만 국소적으로 튀어나온다.
+    """
+    h, w = gray.shape
+    kernel = max(51, (min(h, w) // 4) | 1)  # 홀수, 알약보다 확실히 크게
+    background = cv2.medianBlur(gray, kernel)
+    flat = gray.astype(np.int16) - background.astype(np.int16) + 128
+    return np.clip(flat, 0, 255).astype(np.uint8)
+
+
 def find_pill_bbox(img):
     """이미지에서 가장 큰 전경 덩어리(=알약)의 바운딩 박스를 찾음. 실패 시 None."""
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (5, 5), 0)
+    flat = flatten_background(gray)
 
     dark_bg = is_background_dark(img)
     if dark_bg:
         # 배경이 어두우니 밝은 영역 = 전경
-        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        _, thresh = cv2.threshold(flat, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     else:
         # 배경이 밝으니 어두운 영역 = 전경
-        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+        _, thresh = cv2.threshold(flat, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
     kernel = np.ones((7, 7), np.uint8)
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
