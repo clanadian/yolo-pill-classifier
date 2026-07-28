@@ -26,6 +26,7 @@ YOLOv8을 학습시킨 뒤, Jetson Nano에서 웹캠 영상에 실시간으로 �
 ├── stream/               # Jetson Nano 실시간 웹 스트리밍 데모
 ├── report.md             # 트러블슈팅 로그 (문제/원인/조치 기록)
 ├── update.md             # 날짜별 진행 상황 및 팀원 간 인수인계 메모
+├── pill_combo_plan.md    # 알약 조합 안내 배너 기능 기획서
 └── requirements.txt
 ```
 
@@ -99,3 +100,5 @@ Jetson Nano 세팅, 옵션, 성능 관련 참고사항은 `stream/README.md`를 
 
 - [report.md](report.md) — 라벨링/전처리/학습 준비 과정에서 있었던 문제와 해결 과정 기록
 - [update.md](update.md) — 날짜별 진행 상황, 다음 할 일, 팀원 간 인수인계 메모
+- [pill_combo_plan.md](pill_combo_plan.md) — 알약 조합 안내 배너 기능(좋은 조합/확인
+  필요 조합) 기획서, 팀원 논의용 (아직 미구현)
