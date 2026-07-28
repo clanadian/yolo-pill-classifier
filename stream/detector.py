@@ -26,7 +26,9 @@ def load_model(weights_path, device=None):
     model = YOLO(str(weights_path))
     if device is not None:
         model.to(device)
-    model.names = DEMO_SUPPLEMENT_NAMES
+    # YOLO.names는 읽기 전용 프로퍼티(내부적으로 model.model.names를 가리킴)라
+    # 직접 대입하면 AttributeError가 난다. 실제 dict는 내부 model.model에 있다.
+    model.model.names = DEMO_SUPPLEMENT_NAMES
     return model
 
 
