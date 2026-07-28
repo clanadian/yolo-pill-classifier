@@ -182,7 +182,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .timing-card {
+    .info-card {
       display: flex;
       flex-direction: column;
       background: var(--card);
@@ -192,11 +192,11 @@
       animation: rise-in 0.25s ease;
     }
 
-    .timing-card[hidden] {
+    .info-card[hidden] {
       display: none;
     }
 
-    .timing-title {
+    .info-title {
       font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -205,7 +205,7 @@
       margin-bottom: 0.55rem;
     }
 
-    .timing-row {
+    .info-row {
       display: flex;
       align-items: baseline;
       gap: 0.7rem;
@@ -215,11 +215,11 @@
       border-top: 1px solid var(--hairline);
     }
 
-    .timing-row:first-of-type {
+    .info-row:first-of-type {
       border-top: none;
     }
 
-    .timing-row .timing-name {
+    .info-row .info-name {
       position: relative;
       flex: 0 0 auto;
       padding-left: 0.85rem;
@@ -227,7 +227,7 @@
       color: var(--text);
     }
 
-    .timing-row .timing-name::before {
+    .info-row .info-name::before {
       content: "";
       position: absolute;
       left: 0;
@@ -238,7 +238,7 @@
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
     }
 
-    .timing-row .timing-message {
+    .info-row .info-message {
       color: var(--text-dim);
     }
 
@@ -272,9 +272,14 @@
       <span class="combo-message" id="combo-message"></span>
     </div>
 
-    <div class="timing-card" id="timing-card" hidden>
-      <span class="timing-title">복용 타이밍 안내</span>
+    <div class="info-card" id="timing-card" hidden>
+      <span class="info-title">복용 타이밍 안내</span>
       <div id="timing-list"></div>
+    </div>
+
+    <div class="info-card" id="dosage-card" hidden>
+      <span class="info-title">복용량 안내</span>
+      <div id="dosage-list"></div>
     </div>
 
     <div class="disclaimer">

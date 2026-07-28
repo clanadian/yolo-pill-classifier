@@ -33,16 +33,19 @@ def load_model(weights_path, device=None):
 
 
 def infer_and_annotate(model, frame, conf=0.25, iou=0.75):
-    """프레임 한 장에 대해 추론하고, (bbox+라벨이 그려진 프레임, 감지된 클래스
-    이름 목록)을 돌려준다. 클래스 이름은 조합 배너 매칭(server.py의
-    match_combo)에 쓰인다."""
+    """프레임 한 장에 대해 추론하고, (bbox+라벨이 그려진 프레임, 클래스 이름 ->
+    개수 딕셔너리)를 돌려준다. 개수는 "한 알만 드세요" 같은 복용량 안내
+    (server.py의 build_dosage_notices)에, 클래스 존재 여부는 조합 배너 매칭
+    (match_combo)에 쓰인다."""
     results = model(frame, conf=conf, iou=iou, verbose=False)
     result = results[0]
     annotated = result.plot()
 
-    classes = []
+    counts = {}
     if result.boxes is not None and len(result.boxes) > 0:
         names = result.names
-        classes = sorted({names[int(c)] for c in result.boxes.cls.tolist()})
+        for c in result.boxes.cls.tolist():
+            name = names[int(c)]
+            counts[name] = counts.get(name, 0) + 1
 
-    return annotated, classes
+    return annotated, counts

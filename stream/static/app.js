@@ -1,6 +1,6 @@
 // 서버(stream/server.py)가 이미 bbox+라벨을 그려 보내므로, 여기서는
-// 받은 JPEG를 그대로 그리는 일, 조합 배너/복용 타이밍 안내(JSON 텍스트
-// 메시지) 갱신, 연결이 끊겼을 때 재연결하는 일만 한다.
+// 받은 JPEG를 그대로 그리는 일, 조합 배너/복용 타이밍/복용량 안내(JSON
+// 텍스트 메시지) 갱신, 연결이 끊겼을 때 재연결하는 일만 한다.
 
 const img = document.getElementById("stream");
 const statusEl = document.getElementById("status");
@@ -10,6 +10,8 @@ const bannerIcon = document.getElementById("combo-icon");
 const bannerMessage = document.getElementById("combo-message");
 const timingCard = document.getElementById("timing-card");
 const timingList = document.getElementById("timing-list");
+const dosageCard = document.getElementById("dosage-card");
+const dosageList = document.getElementById("dosage-list");
 let lastUrl = null;
 
 function setStatus(state, text) {
@@ -30,28 +32,29 @@ function updateBanner(combo) {
   banner.hidden = false;
 }
 
-function updateTimings(timings) {
-  timingList.replaceChildren();
-  if (!timings || timings.length === 0) {
-    timingCard.hidden = true;
+// 클래스별 안내 목록(복용 타이밍, 복용량)을 같은 형식의 카드에 렌더링한다.
+function updateInfoList(card, list, items) {
+  list.replaceChildren();
+  if (!items || items.length === 0) {
+    card.hidden = true;
     return;
   }
-  for (const t of timings) {
+  for (const item of items) {
     const row = document.createElement("div");
-    row.className = "timing-row";
+    row.className = "info-row";
 
     const name = document.createElement("span");
-    name.className = "timing-name";
-    name.textContent = t.class;
+    name.className = "info-name";
+    name.textContent = item.class;
 
     const message = document.createElement("span");
-    message.className = "timing-message";
-    message.textContent = t.message;
+    message.className = "info-message";
+    message.textContent = item.message;
 
     row.append(name, message);
-    timingList.append(row);
+    list.append(row);
   }
-  timingCard.hidden = false;
+  card.hidden = false;
 }
 
 function connect() {
@@ -67,7 +70,8 @@ function connect() {
     if (typeof ev.data === "string") {
       const payload = JSON.parse(ev.data);
       updateBanner(payload.combo);
-      updateTimings(payload.timings);
+      updateInfoList(timingCard, timingList, payload.timings);
+      updateInfoList(dosageCard, dosageList, payload.dosage);
       return;
     }
     const url = URL.createObjectURL(new Blob([ev.data], { type: "image/jpeg" }));
@@ -79,7 +83,8 @@ function connect() {
   ws.onclose = () => {
     setStatus("retrying", "disconnected — retrying…");
     updateBanner(null);
-    updateTimings(null);
+    updateInfoList(timingCard, timingList, null);
+    updateInfoList(dosageCard, dosageList, null);
     setTimeout(connect, 1500);
   };
 
