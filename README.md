@@ -24,8 +24,9 @@ YOLOv8을 학습시킨 뒤, Jetson Nano에서 웹캠 영상에 실시간으로 �
 ├── train/                # 학습 스크립트: train_yolo.py
 ├── train_on_colab.ipynb  # Colab(T4 GPU)에서 학습하고 싶을 때
 ├── stream/               # Jetson Nano 실시간 웹 스트리밍 데모
-├── report.md             # 트러블슈팅 로그 (문제/원인/조치 기록)
-├── update.md             # 날짜별 진행 상황 및 팀원 간 인수인계 메모
+├── docs/
+│   ├── report.md         # 트러블슈팅 로그 (문제/원인/조치 기록)
+│   └── update.md         # 날짜별 진행 상황 및 팀원 간 인수인계 메모
 ├── pill_combo_plan.md    # 알약 조합 안내 배너 기능 기획서
 └── requirements.txt
 ```
@@ -53,8 +54,8 @@ python preprocess/split_and_build.py --input_dir <원본사진폴더> --output_d
 ```
 
 결과물: `dataset/images/{train,val}/`, `dataset/labels/{train,val}/`, `dataset/data.yaml`.
-저대비(흰 배경+흰 알약 등) 케이스나 자동 라벨링 실패/오탐 사례는 `report.md`에 원인과
-대응 방법이 정리되어 있습니다.
+저대비(흰 배경+흰 알약 등) 케이스나 자동 라벨링 실패/오탐 사례는 `docs/report.md`에
+원인과 대응 방법이 정리되어 있습니다.
 
 ---
 
@@ -83,6 +84,12 @@ Colab(T4 GPU)에서 돌리려면 `train_on_colab.ipynb`를 열어서 순서대�
 
 `best.pt`가 저장소 루트에 있어야 합니다.
 
+> Jetson Nano는 JetPack 버전 제약 때문에 `ultralytics`/`opencv-python`을
+> `requirements.txt`로 그냥 설치하기 어려운 경우가 많습니다. YOLOv8 추론이 이미
+> 되는 환경이라는 전제로, 여기서 새로 필요한 건 `fastapi`·`uvicorn[standard]`뿐입니다
+> (둘 다 `requirements.txt`에 포함되어 있음). 처음부터 새로 세팅해야 한다면
+> `stream/README.md`의 Jetson Nano 참고 사항을 먼저 보세요.
+
 ```bash
 python stream/server.py
 ```
@@ -98,7 +105,7 @@ Jetson Nano 세팅, 옵션, 성능 관련 참고사항은 `stream/README.md`를 
 
 ## 문서
 
-- [report.md](report.md) — 라벨링/전처리/학습 준비 과정에서 있었던 문제와 해결 과정 기록
-- [update.md](update.md) — 날짜별 진행 상황, 다음 할 일, 팀원 간 인수인계 메모
+- [docs/report.md](docs/report.md) — 라벨링/전처리/학습 준비 과정에서 있었던 문제와 해결 과정 기록
+- [docs/update.md](docs/update.md) — 날짜별 진행 상황, 다음 할 일, 팀원 간 인수인계 메모
 - [pill_combo_plan.md](pill_combo_plan.md) — 알약 조합 안내 배너 기능(좋은 조합/확인
   필요 조합) 기획서, 팀원 논의용 (아직 미구현)
