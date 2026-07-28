@@ -6,6 +6,9 @@ YOLOv8을 학습시킨 뒤, Jetson Nano에서 웹캠 영상에 실시간으로 �
 
 <video src="https://github.com/user-attachments/assets/9fc1c7e3-b32c-4d7b-946e-8a9aced14672" width="600" controls></video>
 
+**실시간 탐지 데모** — 웹캠으로 여러 알약을 동시에 인식해 종류·이름을 표시합니다.
+카메라 대신 저장된 영상 파일(`stream/server.py --source <영상경로>`)로도 분석할 수 있습니다.
+
 ## 클래스 (6종, id 0~5)
 
 | 0 capsule | 1 green_caplet | 2 mint_circle | 3 pink_caplet | 4 white_caplet | 5 yellow_caplet |
