@@ -8,14 +8,14 @@ YOLOv8을 학습시킨 뒤, Jetson Nano에서 웹캠 영상에 실시간으로 �
 
 ## 클래스 (6종, id 0~5)
 
-| id | 이름 |
-|---|---|
-| 0 | capsule |
-| 1 | green_caplet |
-| 2 | mint_circle |
-| 3 | pink_caplet |
-| 4 | white_caplet |
-| 5 | yellow_caplet |
+| id | 이름 | 사진 |
+|---|---|---|
+| 0 | capsule | ![capsule](docs/images/capsule_thumb.jpg) |
+| 1 | green_caplet | ![green_caplet](docs/images/green_caplet_thumb.jpg) |
+| 2 | mint_circle | ![mint_circle](docs/images/mint_circle_thumb.jpg) |
+| 3 | pink_caplet | ![pink_caplet](docs/images/pink_caplet_thumb.jpg) |
+| 4 | white_caplet | ![white_caplet](docs/images/white_caplet_thumb.jpg) |
+| 5 | yellow_caplet | ![yellow_caplet](docs/images/yellow_caplet_thumb.jpg) |
 
 ## 폴더 구조
 
