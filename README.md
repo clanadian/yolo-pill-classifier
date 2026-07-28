@@ -4,8 +4,6 @@ YOLOv8 기반 알약(캡슐/정제) 6종 탐지 프로젝트. 사진을 찍어 �
 YOLOv8을 학습시킨 뒤, Jetson Nano에서 웹캠 영상에 실시간으로 탐지 결과를 띄우는
 웹 데모까지가 목표입니다.
 
-![클래스 6종](docs/images/pill_classes_overview.jpg)
-
 ## 클래스 (6종, id 0~5)
 
 | 0 capsule | 1 green_caplet | 2 mint_circle | 3 pink_caplet | 4 white_caplet | 5 yellow_caplet |
