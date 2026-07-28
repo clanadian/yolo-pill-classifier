@@ -49,6 +49,10 @@ CLASS_NAMES = [
 
 IMG_EXTS = {".jpg", ".jpeg", ".png"}
 
+# neg_black_*, neg_white_* 등은 알약이 없는 배경만 찍은 네거티브 샘플이라
+# 라벨이 비어 있는 게 정상이다 (YOLO 포맷에서 빈 라벨 = 객체 0개).
+NEG_PREFIX = "neg_"
+
 # 데이터셋 폴더 이름이 환경마다 다르다.
 #   로컬  : dataset/
 #   Colab : dataset_yolo/            (train_on_colab.ipynb가 zip을 여기로 품)
@@ -111,6 +115,7 @@ def preflight(dataset_dir: Path):
     """
     problems = []
     counts = {}
+    neg_counts = {}
 
     for split in ("train", "val"):
         img_dir = dataset_dir / "images" / split
@@ -127,6 +132,7 @@ def preflight(dataset_dir: Path):
 
         per_class = Counter()
         missing, empty, bad, huge = [], [], [], []
+        neg_count = 0
 
         for img_path in images:
             lbl_path = lbl_dir / (img_path.stem + ".txt")
@@ -136,7 +142,10 @@ def preflight(dataset_dir: Path):
 
             lines = [l for l in lbl_path.read_text(encoding="utf-8").splitlines() if l.strip()]
             if not lines:
-                empty.append(img_path.name)
+                if img_path.name.lower().startswith(NEG_PREFIX):
+                    neg_count += 1
+                else:
+                    empty.append(img_path.name)
                 continue
 
             for line in lines:
@@ -154,11 +163,12 @@ def preflight(dataset_dir: Path):
                     huge.append(lbl_path.name)
 
         counts[split] = per_class
+        neg_counts[split] = neg_count
 
         if missing:
             problems.append(f"[{split}] 라벨 없는 이미지 {len(missing)}장: {missing[:5]}")
         if empty:
-            problems.append(f"[{split}] 빈 라벨 {len(empty)}개: {empty[:5]}")
+            problems.append(f"[{split}] 빈 라벨(네거티브 아님) {len(empty)}개: {empty[:5]}")
         if bad:
             problems.append(f"[{split}] 형식/class_id 이상 {len(bad)}개: {bad[:5]}")
         if huge:
@@ -176,6 +186,7 @@ def preflight(dataset_dir: Path):
     for cid, name in enumerate(CLASS_NAMES):
         print(f"{name:15s} {counts['train'][cid]:7d} {counts['val'][cid]:7d}")
     print(f"{'합계':15s} {sum(counts['train'].values()):7d} {sum(counts['val'].values()):7d}")
+    print(f"{'negative':15s} {neg_counts.get('train', 0):7d} {neg_counts.get('val', 0):7d}")
 
     if not counts.get("val"):
         print("[경고] val 셋이 비어 있어 검증 지표를 볼 수 없습니다.")
