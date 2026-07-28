@@ -133,3 +133,8 @@ Jetson Nano 세팅, 옵션, 성능 관련 참고사항은 `stream/README.md`를 
 - [docs/pill_combo_plan.md](docs/pill_combo_plan.md) — 알약 조합 안내 배너 기능(좋은
   조합/확인 필요 조합) 기획서. `stream/combos.json`·`timing.json`·`dosage.json`으로
   구현 완료
+
+## 역할 분담
+
+- **데이터 파이프라인** (본인): 촬영, 라벨링/전처리(`preprocess/`), 색감 보정, 데이터셋 구성(`dataset/`, `data.yaml`)
+- **모델 학습·배포** (팀원): 학습(`train/`), Jetson Nano 배포, 실시간 웹 데모(`stream/`), 조합 안내 배너
