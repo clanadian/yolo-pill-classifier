@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        width: 720pt;
+        height: 405pt;
+        overflow: hidden;
+        font-family: "Pretendard", sans-serif;
+        background: #ffffff;
+        color: #111111;
+        position: relative;
+        word-break: keep-all;
+      }
+      .spine {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 6pt;
+        height: 100%;
+        background: #e8000d;
+      }
+      .frame {
+        position: absolute;
+        left: 6pt;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        padding: 40pt 48pt;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 10pt;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #e8000d;
+      }
+      .pageno {
+        font-size: 10pt;
+        color: #8a8a8a;
+        font-variant-numeric: tabular-nums;
+      }
+      h1 {
+        font-size: 46pt;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.18;
+        margin-top: 18pt;
+        color: #111111;
+      }
+      .subtitle {
+        font-size: 14pt;
+        color: #444444;
+        margin-top: 16pt;
+        letter-spacing: 0.02em;
+      }
+      .rule {
+        height: 1px;
+        background: #dddddd;
+        margin: 22pt 0 0;
+      }
+      .meta-row {
+        display: flex;
+        gap: 48pt;
+        padding-top: 16pt;
+      }
+      .meta-row .item p:first-child {
+        font-size: 10pt;
+        color: #8a8a8a;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 4pt;
+      }
+      .meta-row .item p:last-child {
+        font-size: 11pt;
+        font-weight: 600;
+        color: #111111;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="spine"></div>
+    <div class="frame">
+      <div>
+        <div class="top-row">
+          <span class="tag">대한상공회의소 AI시스템 반도체 SW개발자 과정</span>
+          <span class="pageno">01</span>
+        </div>
+        <h1>YOLOv8 알약 인식 프로젝트</h1>
+      </div>
+      <div>
+        <div class="rule"></div>
+        <div class="meta-row">
+          <div class="item">
+            <p>Model</p>
+            <p>YOLOv8 · 6 Classes</p>
+          </div>
+          <div class="item">
+            <p>Deployment</p>
+            <p>Jetson Nano · Real-time Web</p>
+          </div>
+          <div class="item">
+            <p>Date</p>
+            <p>2026.07</p>
+          </div>
+          <div class="item">
+            <p>Team</p>
+            <p>[4조] 우윤지, 황은빈</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:720pt; height:405pt; overflow:hidden; font-family:'Pretendard',sans-serif; background:#FFFFFF; color:#111111; position:relative; word-break:keep-all; }
+  .spine { position:absolute; left:0; top:0; width:6pt; height:100%; background:#E8000D; }
+  .frame { position:absolute; left:6pt; top:0; right:0; bottom:0; padding:28pt 42pt 20pt 36pt; display:flex; flex-direction:column; }
+  .eyebrow-row { display:flex; justify-content:space-between; align-items:baseline; }
+  .eyebrow { font-size:10pt; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#E8000D; }
+  .pageno { font-size:10pt; color:#8A8A8A; font-variant-numeric:tabular-nums; }
+  h1 { font-size:21pt; font-weight:700; letter-spacing:-0.01em; line-height:1.3; margin-top:6pt; }
+  .rule { height:1px; background:#DDDDDD; margin:12pt 0 14pt; }
+  .content { flex:1; min-height:0; display:flex; gap:24pt; }
+  .col { flex:1.3; display:flex; flex-direction:column; justify-content:center; gap:16pt; }
+  .item { display:flex; gap:12pt; }
+  .item .n { font-size:10pt; font-weight:700; color:#E8000D; font-variant-numeric:tabular-nums; padding-top:1pt; }
+  .item p { font-size:11pt; color:#444444; line-height:1.55; }
+  .item p b { color:#111111; }
+  .limitbox { flex:1; border:1px solid #E8000D; padding:16pt; display:flex; flex-direction:column; gap:10pt; }
+  .limitbox .title { font-size:10pt; font-weight:700; color:#E8000D; text-transform:uppercase; letter-spacing:0.08em; }
+  .limitbox p { font-size:10.5pt; color:#444444; line-height:1.6; }
+  .limitbox p b { color:#111111; }
+</style>
+</head>
+<body>
+  <div class="spine"></div>
+  <div class="frame">
+    <div class="eyebrow-row">
+      <span class="eyebrow">04 · 고찰</span>
+      <span class="pageno">17</span>
+    </div>
+    <h1>자동화는 "성공 로그"가 아니라 실제 결과값을 검증해야 신뢰할 수 있다</h1>
+    <div class="rule"></div>
+    <div class="content">
+      <div class="col">
+        <div class="item">
+          <span class="n">01</span>
+          <p>자동 라벨링·자동 검증 모두 <b>"에러 없음"이 곧 "정확함"을 보장하지 않는다</b> — 실제 박스 좌표, 실제 색상 오차 수치를 직접 확인하는 과정이 반복적으로 필요했다.</p>
+        </div>
+        <div class="item">
+          <span class="n">02</span>
+          <p><b>데이터 품질(조명, 배경, 색보정)</b>이 모델 성능에 미치는 영향이 모델 구조보다 컸다.</p>
+        </div>
+        <div class="item">
+          <span class="n">03</span>
+          <p>로컬 개발 환경과 실제 배포 보드(Jetson)의 <b>라이브러리 버전 차이</b>에서만 드러나는 문제가 있었다(예: model.names 이슈) — 실기기 테스트가 필수적이다.</p>
+        </div>
+      </div>
+      <div class="limitbox">
+        <p class="title">한계</p>
+        <p>탐지 클래스는 <b>색상/모양 기반</b>이라 실제 성분을 특정하지 못한다.</p>
+        <p>조합/타이밍/복용량 안내는 <b>사용자가 등록한 규칙</b>일 뿐 의학적 판단이 아니며, 화면에 "참고용 데모" 문구를 상시 노출해 명확히 한다.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
