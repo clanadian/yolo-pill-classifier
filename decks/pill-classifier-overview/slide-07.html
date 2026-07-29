@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:720pt; height:405pt; overflow:hidden; font-family:'Pretendard',sans-serif; background:#FFFFFF; color:#111111; position:relative; word-break:keep-all; }
+  .spine { position:absolute; left:0; top:0; width:6pt; height:100%; background:#E8000D; }
+  .frame { position:absolute; left:6pt; top:0; right:0; bottom:0; padding:30pt 42pt 22pt 36pt; display:flex; flex-direction:column; }
+  .eyebrow-row { display:flex; justify-content:space-between; align-items:baseline; }
+  .eyebrow { font-size:10pt; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#E8000D; }
+  .pageno { font-size:10pt; color:#8A8A8A; font-variant-numeric:tabular-nums; }
+  h1 { font-size:23pt; font-weight:700; letter-spacing:-0.01em; line-height:1.25; margin-top:6pt; }
+  .rule { height:1px; background:#DDDDDD; margin:14pt 0 16pt; }
+  .content { flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:0; }
+  .cell { padding:14pt 20pt 14pt 0; }
+  .cell:nth-child(odd) { border-right:1px solid #DDDDDD; }
+  .cell:nth-child(1), .cell:nth-child(2) { border-bottom:1px solid #DDDDDD; padding-bottom:16pt; }
+  .cell:nth-child(2), .cell:nth-child(4) { padding-left:20pt; }
+  .cell .n { font-size:10pt; font-weight:700; color:#E8000D; font-variant-numeric:tabular-nums; }
+  .cell h3 { font-size:13pt; font-weight:700; margin-top:6pt; margin-bottom:6pt; }
+  .cell p { font-size:11pt; color:#444444; line-height:1.55; }
+</style>
+</head>
+<body>
+  <div class="spine"></div>
+  <div class="frame">
+    <div class="eyebrow-row">
+      <span class="eyebrow">01 · 개요</span>
+      <span class="pageno">07</span>
+    </div>
+    <h1>단순 탐지를 넘어, 임베디드 환경에서 동작하는<br>"안내형" 서비스 구조를 검증</h1>
+    <div class="rule"></div>
+    <div class="content">
+      <div class="cell">
+        <p class="n">01 · 실용적 가치</p>
+        <h3>한눈에 확인</h3>
+        <p>여러 영양제를 동시에 놓고 봐도 각각 무엇인지, 언제·몇 알 먹어야 하는지 바로 확인 가능</p>
+      </div>
+      <div class="cell">
+        <p class="n">02 · 기술적 가치</p>
+        <h3>엔드투엔드 파이프라인</h3>
+        <p>데이터 수집부터 학습, 임베디드 보드(Jetson Nano) 실시간 추론·웹 스트리밍까지 직접 구현</p>
+      </div>
+      <div class="cell">
+        <p class="n">03 · 안전한 설계</p>
+        <h3>재사용 가능한 뼈대</h3>
+        <p>모델이 직접 판단하지 않고 사용자 등록 규칙만 매칭 — 실제 의약품 DB 연동 시에도 그대로 재사용 가능</p>
+      </div>
+      <div class="cell">
+        <p class="n">04 · 확장 가능성</p>
+        <h3>성분 인식으로 교체 가능</h3>
+        <p>클래스를 실제 성분 인식 모델로 교체하면 복약 관리 보조 도구로 확장 여지</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

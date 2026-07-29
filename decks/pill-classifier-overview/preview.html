@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Slide Preview — 전체 슬라이드</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #eee;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #111;
+    border-bottom: 1px solid #333;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  header h1 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+  }
+  header .count {
+    font-size: 12px;
+    color: #888;
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-left: auto;
+  }
+  nav a {
+    display: inline-block;
+    min-width: 22px;
+    text-align: center;
+    padding: 3px 6px;
+    background: #2a2a2a;
+    color: #ccc;
+    border-radius: 4px;
+    font-size: 11px;
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+  nav a:hover { background: #444; color: #fff; }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    padding: 28px 16px 80px;
+  }
+  .slide-card {
+    scroll-margin-top: 60px;
+    width: min(960px, 96vw);
+  }
+  .slide-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0 2px 6px;
+    color: #999;
+    font-size: 12px;
+  }
+  .slide-label .num {
+    color: #e8000d;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .slide-frame-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 720 / 405;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+  }
+  .slide-frame-wrap iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 960px;
+    height: 540px;
+    border: none;
+    transform: scale(var(--s, 1));
+    transform-origin: top left;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>알약 인식 프로젝트 — 슬라이드 전체 보기</h1>
+    <span class="count">18 slides</span>
+    <nav id="nav"></nav>
+  </header>
+
+  <main id="main"></main>
+
+  <script>
+    const slides = [
+      "YOLOv8 알약 인식 프로젝트",
+      "목차",
+      "알약 6종을 실시간으로 탐지하고, Jetson Nano에서 바로 웹으로 확인한다",
+      "6클래스 + 네거티브 샘플, 총 1,080장 규모의 데이터셋",
+      "카메라 캡처·추론·웹서버를 Jetson Nano 한 대에서 전부 처리",
+      "사용자가 등록한 규칙만 매칭 — 모델이 직접 판단하지 않는다",
+      "단순 탐지를 넘어, 임베디드 환경에서 동작하는",
+      "트러블슈팅",
+      "자동 라벨링의 함정 — 콘솔은 성공, 실제 박스는 배경 전체",
+      "데이터 일관성 문제 — 라벨을 다시 그려도 못 고치는 문제는 과감히 제외",
+      "조명에 따른 색 오분류 — 채널별 보정 실패 → 휘도/채도 분리로 재설계",
+      "결과",
+      "6개 클래스 모두 실시간으로 정확히 인식, 영양제 이름으로 표시",
+      "여러 알약 동시 인식 & 조합 규칙 매칭 시 배너 안내",
+      "권장 개수 초과 감지 시, 실제 개수를 반영한 경고가 즉석에서 생성",
+      "고찰",
+      "자동화는 \"성공 로그\"가 아니라 실제 결과값을 검증해야 신뢰할 수 있다",
+      "Thank You",
+    ];
+
+    const nav = document.getElementById('nav');
+    const main = document.getElementById('main');
+
+    slides.forEach((title, i) => {
+      const n = String(i + 1).padStart(2, '0');
+
+      const navLink = document.createElement('a');
+      navLink.href = `#slide-${n}`;
+      navLink.textContent = n;
+      navLink.title = title;
+      nav.appendChild(navLink);
+
+      const card = document.createElement('section');
+      card.className = 'slide-card';
+      card.id = `slide-${n}`;
+      card.innerHTML = `
+        <div class="slide-label"><span class="num">${n}</span><span>${title}</span></div>
+        <div class="slide-frame-wrap">
+          <iframe src="slide-${n}.html" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      `;
+      main.appendChild(card);
+    });
+
+    function rescale() {
+      document.querySelectorAll('.slide-frame-wrap').forEach(wrap => {
+        const s = wrap.clientWidth / 960;
+        wrap.querySelector('iframe').style.setProperty('--s', s);
+      });
+    }
+    window.addEventListener('resize', rescale);
+    window.addEventListener('load', rescale);
+    rescale();
+  </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:720pt; height:405pt; overflow:hidden; font-family:'Pretendard',sans-serif; background:#FFFFFF; color:#111111; position:relative; word-break:keep-all; }
+  .spine { position:absolute; left:0; top:0; width:6pt; height:100%; background:#E8000D; }
+  .frame { position:absolute; left:6pt; top:0; right:0; bottom:0; padding:30pt 42pt 22pt 36pt; display:flex; flex-direction:column; }
+  .eyebrow-row { display:flex; justify-content:space-between; align-items:baseline; }
+  .eyebrow { font-size:10pt; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#E8000D; }
+  .pageno { font-size:10pt; color:#8A8A8A; font-variant-numeric:tabular-nums; }
+  h1 { font-size:24pt; font-weight:700; letter-spacing:-0.01em; line-height:1.25; margin-top:6pt; }
+  .rule { height:1px; background:#DDDDDD; margin:14pt 0 16pt; }
+  .content { flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:20pt; }
+
+  .section-label { font-size:10pt; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#8A8A8A; margin-bottom:8pt; }
+  .classrow { display:flex; }
+  .ctile { flex:1; border-right:1px solid #DDDDDD; padding:0 10pt; }
+  .ctile:first-child { padding-left:0; }
+  .ctile:last-child { border-right:none; }
+  .ctile .n { font-size:26pt; font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-0.01em; }
+  .ctile .l { font-size:10pt; color:#444444; margin-top:2pt; }
+
+  .highlightrow { display:flex; gap:0; border-top:1px solid #DDDDDD; padding-top:14pt; }
+  .htile { flex:1; }
+  .htile .n { font-size:22pt; font-weight:700; color:#E8000D; font-variant-numeric:tabular-nums; }
+  .htile .l { font-size:10.5pt; color:#444444; margin-top:3pt; }
+
+  .toolrow { font-size:11pt; color:#444444; line-height:1.6; }
+  .toolrow code { font-family:monospace; }
+</style>
+</head>
+<body>
+  <div class="spine"></div>
+  <div class="frame">
+    <div class="eyebrow-row">
+      <span class="eyebrow">01 · 개요</span>
+      <span class="pageno">04</span>
+    </div>
+    <h1>6클래스 + 네거티브 샘플, 총 1,080장 규모의 데이터셋</h1>
+    <div class="rule"></div>
+    <div class="content">
+      <div>
+        <p class="section-label">클래스별 이미지 수</p>
+        <div class="classrow">
+          <div class="ctile"><p class="n">149</p><p class="l">capsule</p></div>
+          <div class="ctile"><p class="n">188</p><p class="l">green_caplet</p></div>
+          <div class="ctile"><p class="n">169</p><p class="l">mint_circle</p></div>
+          <div class="ctile"><p class="n">186</p><p class="l">pink_caplet</p></div>
+          <div class="ctile"><p class="n">181</p><p class="l">white_caplet</p></div>
+          <div class="ctile"><p class="n">187</p><p class="l">yellow_caplet</p></div>
+        </div>
+      </div>
+      <div class="highlightrow">
+        <div class="htile"><p class="n">20</p><p class="l">배경만 있는 네거티브 샘플<br>(오탐지 감소 목적)</p></div>
+        <div class="htile"><p class="n">919 / 161</p><p class="l">최종 train / val 장수</p></div>
+        <div class="htile"><p class="n">2</p><p class="l">학습 경로<br>(로컬 GPU · Colab T4)</p></div>
+      </div>
+      <p class="toolrow">
+        <code>train/train_yolo.py</code>(로컬) · <code>notebooks/train_on_colab.ipynb</code>(Colab) ·
+        <code>--export-best</code> 옵션으로 학습 완료 후 <code>weights/best.pt</code> 자동 생성
+      </p>
+    </div>
+  </div>
+</body>
+</html>

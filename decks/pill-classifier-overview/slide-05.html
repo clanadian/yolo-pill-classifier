@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:720pt; height:405pt; overflow:hidden; font-family:'Pretendard',sans-serif; background:#FFFFFF; color:#111111; position:relative; word-break:keep-all; }
+  .spine { position:absolute; left:0; top:0; width:6pt; height:100%; background:#E8000D; }
+  .frame { position:absolute; left:6pt; top:0; right:0; bottom:0; padding:30pt 42pt 22pt 36pt; display:flex; flex-direction:column; }
+  .eyebrow-row { display:flex; justify-content:space-between; align-items:baseline; }
+  .eyebrow { font-size:10pt; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#E8000D; }
+  .pageno { font-size:10pt; color:#8A8A8A; font-variant-numeric:tabular-nums; }
+  h1 { font-size:24pt; font-weight:700; letter-spacing:-0.01em; line-height:1.25; margin-top:6pt; }
+  .rule { height:1px; background:#DDDDDD; margin:14pt 0 16pt; }
+  .content { flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:24pt; }
+
+  .section-label { font-size:10pt; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#8A8A8A; margin-bottom:8pt; }
+  .arch { display:flex; align-items:stretch; }
+  .abox { flex:1; border:1px solid #DDDDDD; padding:10pt 10pt; text-align:center; }
+  .abox.accent { border-color:#E8000D; }
+  .abox .t { font-size:10.5pt; font-weight:600; line-height:1.4; }
+  .arrow { width:16pt; display:flex; align-items:center; justify-content:center; font-size:12pt; color:#8A8A8A; }
+
+  .cols { display:flex; gap:28pt; flex:1; }
+  .col { flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .col h3 { font-size:12pt; font-weight:700; margin-bottom:6pt; }
+  .col p { font-size:11.5pt; color:#444444; line-height:1.6; }
+  .col + .col { border-left:1px solid #DDDDDD; padding-left:28pt; }
+</style>
+</head>
+<body>
+  <div class="spine"></div>
+  <div class="frame">
+    <div class="eyebrow-row">
+      <span class="eyebrow">01 · 개요</span>
+      <span class="pageno">05</span>
+    </div>
+    <h1>카메라 캡처·추론·웹서버를 Jetson Nano 한 대에서 전부 처리</h1>
+    <div class="rule"></div>
+    <div class="content">
+      <div>
+        <p class="section-label">Architecture</p>
+        <div class="arch">
+          <div class="abox"><p class="t">USB 웹캠</p></div>
+          <div class="arrow">→</div>
+          <div class="abox"><p class="t">YOLOv8 추론<br>(별도 스레드)</p></div>
+          <div class="arrow">→</div>
+          <div class="abox"><p class="t">bbox / 라벨<br>오버레이</p></div>
+          <div class="arrow">→</div>
+          <div class="abox accent"><p class="t">WebSocket<br>스트리밍</p></div>
+          <div class="arrow">→</div>
+          <div class="abox"><p class="t">브라우저</p></div>
+        </div>
+      </div>
+      <div class="cols">
+        <div class="col">
+          <h3>지연 없는 스트리밍</h3>
+          <p><b>FrameBroadcaster</b>가 최신 프레임 1장만 보관 — 느린 보드/클라이언트에서도 지연이 누적되지 않고 항상 최신 프레임으로 건너뛴다.</p>
+        </div>
+        <div class="col">
+          <h3>접속 및 성능 설정</h3>
+          <p><code>http://&lt;Jetson IP&gt;:8000/</code> 접속만으로 확인 (LAN 전용, 포트포워딩/HTTPS 불필요). 해상도 480×360, 5~8fps로 전송 프레임 제한.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:720pt; height:405pt; overflow:hidden; font-family:'Pretendard',sans-serif; background:#FFFFFF; color:#111111; position:relative; word-break:keep-all; }
+  .spine { position:absolute; left:0; top:0; width:6pt; height:100%; background:#E8000D; }
+  .frame { position:absolute; left:6pt; top:0; right:0; bottom:0; padding:26pt 42pt 20pt 36pt; display:flex; flex-direction:column; }
+  .eyebrow-row { display:flex; justify-content:space-between; align-items:baseline; }
+  .eyebrow { font-size:10pt; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#E8000D; }
+  .pageno { font-size:10pt; color:#8A8A8A; font-variant-numeric:tabular-nums; }
+  h1 { font-size:20pt; font-weight:700; letter-spacing:-0.01em; line-height:1.25; margin-top:5pt; }
+  .rule { height:1px; background:#DDDDDD; margin:10pt 0 12pt; }
+  .grid { flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; gap:16pt; }
+  .cell { display:flex; flex-direction:column; border:1px solid #DDDDDD; overflow:hidden; }
+  .cell .label { background:#111111; color:#fff; font-size:10pt; font-weight:600; padding:6pt 10pt; }
+  .cell .imgwrap { flex:1; min-height:0; background:#0a0d13; display:flex; align-items:center; justify-content:center; }
+  .cell img { width:100%; height:100%; object-fit:contain; display:block; }
+</style>
+</head>
+<body>
+  <div class="spine"></div>
+  <div class="frame">
+    <div class="eyebrow-row">
+      <span class="eyebrow">03 · 결과 3</span>
+      <span class="pageno">15</span>
+    </div>
+    <h1>권장 개수 초과 감지 시, 실제 개수를 반영한 경고가 즉석에서 생성</h1>
+    <div class="rule"></div>
+    <div class="grid">
+      <div class="cell">
+        <p class="label">비타민D 2개 동시 감지</p>
+        <div class="imgwrap"><img src="./assets/all_3_한번에_한_알_dosage-crop.png" alt="복용량 안내 예시 1"></div>
+      </div>
+      <div class="cell">
+        <p class="label">복용량 안내 상세 화면</p>
+        <div class="imgwrap"><img src="./assets/all_3_한번에_한_알_2_dosage-crop.png" alt="복용량 안내 예시 2"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
