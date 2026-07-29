@@ -1,0 +1,703 @@
+{
+  "schemaVersion": 2,
+  "verdict": "proceed",
+  "generatedAt": "2026-07-28T08:05:46.303Z",
+  "slideMode": "presentation",
+  "resolution": "1080p",
+  "previewDir": "gate-preview",
+  "reportPath": ".slides-grab/design-gate-report.md",
+  "passA": {
+    "reportPath": "/mnt/c/Users/kccistc/Documents/deep_learning/yolo-pill-classifier/decks/pill-classifier-overview/pass-a-report.md",
+    "summary": "# Pass A: System Contract / Constraint Integrity",
+    "verdict": "PASS",
+    "unresolvedCritical": 0,
+    "blockingFindings": [],
+    "checks": [
+      {
+        "name": "System consistency",
+        "status": "pass"
+      },
+      {
+        "name": "Color discipline",
+        "status": "pass"
+      },
+      {
+        "name": "AI slop tropes",
+        "status": "pass"
+      },
+      {
+        "name": "Content discipline",
+        "status": "pass"
+      }
+    ],
+    "evidenceFiles": [
+      "slide-01.png",
+      "slide-02.png",
+      "slide-03.png",
+      "slide-04.png",
+      "slide-05.png",
+      "slide-06.png",
+      "slide-07.png",
+      "slide-08.png",
+      "slide-09.png",
+      "slide-10.png",
+      "slide-11.png",
+      "slide-12.png",
+      "slide-13.png",
+      "slide-14.png",
+      "slide-15.png",
+      "slide-16.png",
+      "slide-17.png",
+      "slide-18.png"
+    ],
+    "slideFingerprints": [
+      {
+        "file": "slide-01.html",
+        "sha256": "33abd49c542923d36ebb0a72b27cb4971124a3344da87037e3fe14349236142d"
+      },
+      {
+        "file": "slide-02.html",
+        "sha256": "69c806145250196ebafebba3ace0d691bad782e9d8b33c8d07b0f69e9953f434"
+      },
+      {
+        "file": "slide-03.html",
+        "sha256": "5ce95eedfbc8ef5a685dd5c90657def2d0a4f8a9d47570c45ab9c4c83b7f78af"
+      },
+      {
+        "file": "slide-04.html",
+        "sha256": "04614b13b8c2035c2809843e6d3f50f06d910043625f16273d23874cf31b3656"
+      },
+      {
+        "file": "slide-05.html",
+        "sha256": "05d7e98e8eb9f9be474fea6c5a02a6c36f955a256dadc172fdc57c2071ea0e23"
+      },
+      {
+        "file": "slide-06.html",
+        "sha256": "a3481e10a0e05520a928f10a9c12b2468b488c88e9888ddf2bcddc58a3b598fa"
+      },
+      {
+        "file": "slide-07.html",
+        "sha256": "745a03883904699916861fdf242441cffbbde55e3ddffc9af3e8ff7c7d93da3b"
+      },
+      {
+        "file": "slide-08.html",
+        "sha256": "7a3c5fa6c934e41fe7d3fd081c53c72a2a509a2f94875a5b393401ae11adc0a6"
+      },
+      {
+        "file": "slide-09.html",
+        "sha256": "11fab698ca32b6f676ebaeaad2422f323b3720a017c7216fa495b7867e27c385"
+      },
+      {
+        "file": "slide-10.html",
+        "sha256": "ec5cde70c059a64fb891228288cea45098d67ade6dbe10f443899a69af7cd37d"
+      },
+      {
+        "file": "slide-11.html",
+        "sha256": "ad42e469c180c5598ffe9b78b5f2a34874c39b42a15839ce373f4cf716a9580e"
+      },
+      {
+        "file": "slide-12.html",
+        "sha256": "7422ca1ce70c9421058e9d5c36ba84b7d59c520f6ee8565fe2df89cba88815d2"
+      },
+      {
+        "file": "slide-13.html",
+        "sha256": "a1b5df1fdce36d0630cb8cdb50864fbbd4d47b4ec87622b1a9d456c9323b2385"
+      },
+      {
+        "file": "slide-14.html",
+        "sha256": "076cb6273f229238ed8ba2e3f21fddba35dcd880a5ff5fea750e29cac3d3c342"
+      },
+      {
+        "file": "slide-15.html",
+        "sha256": "df0963cb23cdacaebf99c645f493a7942dd951e3e365712997a689e3e1d810cf"
+      },
+      {
+        "file": "slide-16.html",
+        "sha256": "bf7f7f8ff843e7cd108d0ec28a65eb194deb06c5a17231760ecd272fd58e551e"
+      },
+      {
+        "file": "slide-17.html",
+        "sha256": "247bd84864611256924c34492c47792e9227eff16d1b96f74ff98e2785c8095e"
+      },
+      {
+        "file": "slide-18.html",
+        "sha256": "cdce477beca95e8fdfb8f165fd8a1894ede66ba3672565eea213548d09ce88eb"
+      }
+    ]
+  },
+  "passB": {
+    "reportPath": "/mnt/c/Users/kccistc/Documents/deep_learning/yolo-pill-classifier/decks/pill-classifier-overview/pass-b-report.md",
+    "summary": "# Pass B: Audience Impact / Expressive Readability",
+    "verdict": "PASS",
+    "unresolvedCritical": 0,
+    "blockingFindings": [],
+    "checks": [
+      {
+        "name": "Composition & hierarchy",
+        "status": "pass"
+      },
+      {
+        "name": "Typography & legibility",
+        "status": "pass"
+      },
+      {
+        "name": "Korean/CJK word-break integrity",
+        "status": "pass"
+      },
+      {
+        "name": "Review Litmus",
+        "status": "pass"
+      }
+    ],
+    "evidenceFiles": [
+      "slide-01.png",
+      "slide-02.png",
+      "slide-03.png",
+      "slide-04.png",
+      "slide-05.png",
+      "slide-06.png",
+      "slide-07.png",
+      "slide-08.png",
+      "slide-09.png",
+      "slide-10.png",
+      "slide-11.png",
+      "slide-12.png",
+      "slide-13.png",
+      "slide-14.png",
+      "slide-15.png",
+      "slide-16.png",
+      "slide-17.png",
+      "slide-18.png"
+    ],
+    "slideFingerprints": [
+      {
+        "file": "slide-01.html",
+        "sha256": "33abd49c542923d36ebb0a72b27cb4971124a3344da87037e3fe14349236142d"
+      },
+      {
+        "file": "slide-02.html",
+        "sha256": "69c806145250196ebafebba3ace0d691bad782e9d8b33c8d07b0f69e9953f434"
+      },
+      {
+        "file": "slide-03.html",
+        "sha256": "5ce95eedfbc8ef5a685dd5c90657def2d0a4f8a9d47570c45ab9c4c83b7f78af"
+      },
+      {
+        "file": "slide-04.html",
+        "sha256": "04614b13b8c2035c2809843e6d3f50f06d910043625f16273d23874cf31b3656"
+      },
+      {
+        "file": "slide-05.html",
+        "sha256": "05d7e98e8eb9f9be474fea6c5a02a6c36f955a256dadc172fdc57c2071ea0e23"
+      },
+      {
+        "file": "slide-06.html",
+        "sha256": "a3481e10a0e05520a928f10a9c12b2468b488c88e9888ddf2bcddc58a3b598fa"
+      },
+      {
+        "file": "slide-07.html",
+        "sha256": "745a03883904699916861fdf242441cffbbde55e3ddffc9af3e8ff7c7d93da3b"
+      },
+      {
+        "file": "slide-08.html",
+        "sha256": "7a3c5fa6c934e41fe7d3fd081c53c72a2a509a2f94875a5b393401ae11adc0a6"
+      },
+      {
+        "file": "slide-09.html",
+        "sha256": "11fab698ca32b6f676ebaeaad2422f323b3720a017c7216fa495b7867e27c385"
+      },
+      {
+        "file": "slide-10.html",
+        "sha256": "ec5cde70c059a64fb891228288cea45098d67ade6dbe10f443899a69af7cd37d"
+      },
+      {
+        "file": "slide-11.html",
+        "sha256": "ad42e469c180c5598ffe9b78b5f2a34874c39b42a15839ce373f4cf716a9580e"
+      },
+      {
+        "file": "slide-12.html",
+        "sha256": "7422ca1ce70c9421058e9d5c36ba84b7d59c520f6ee8565fe2df89cba88815d2"
+      },
+      {
+        "file": "slide-13.html",
+        "sha256": "a1b5df1fdce36d0630cb8cdb50864fbbd4d47b4ec87622b1a9d456c9323b2385"
+      },
+      {
+        "file": "slide-14.html",
+        "sha256": "076cb6273f229238ed8ba2e3f21fddba35dcd880a5ff5fea750e29cac3d3c342"
+      },
+      {
+        "file": "slide-15.html",
+        "sha256": "df0963cb23cdacaebf99c645f493a7942dd951e3e365712997a689e3e1d810cf"
+      },
+      {
+        "file": "slide-16.html",
+        "sha256": "bf7f7f8ff843e7cd108d0ec28a65eb194deb06c5a17231760ecd272fd58e551e"
+      },
+      {
+        "file": "slide-17.html",
+        "sha256": "247bd84864611256924c34492c47792e9227eff16d1b96f74ff98e2785c8095e"
+      },
+      {
+        "file": "slide-18.html",
+        "sha256": "cdce477beca95e8fdfb8f165fd8a1894ede66ba3672565eea213548d09ce88eb"
+      }
+    ]
+  },
+  "gateValidation": {
+    "status": "passed",
+    "failures": [],
+    "passA": {
+      "label": "Pass A",
+      "verdict": "PASS",
+      "confidence": "High",
+      "unresolvedCritical": 0,
+      "blockingFindings": [],
+      "checks": [
+        {
+          "name": "System consistency",
+          "status": "pass"
+        },
+        {
+          "name": "Color discipline",
+          "status": "pass"
+        },
+        {
+          "name": "AI slop tropes",
+          "status": "pass"
+        },
+        {
+          "name": "Content discipline",
+          "status": "pass"
+        }
+      ],
+      "evidenceFiles": [
+        "slide-01.png",
+        "slide-02.png",
+        "slide-03.png",
+        "slide-04.png",
+        "slide-05.png",
+        "slide-06.png",
+        "slide-07.png",
+        "slide-08.png",
+        "slide-09.png",
+        "slide-10.png",
+        "slide-11.png",
+        "slide-12.png",
+        "slide-13.png",
+        "slide-14.png",
+        "slide-15.png",
+        "slide-16.png",
+        "slide-17.png",
+        "slide-18.png"
+      ],
+      "slideFingerprints": [
+        {
+          "file": "slide-01.html",
+          "sha256": "33abd49c542923d36ebb0a72b27cb4971124a3344da87037e3fe14349236142d"
+        },
+        {
+          "file": "slide-02.html",
+          "sha256": "69c806145250196ebafebba3ace0d691bad782e9d8b33c8d07b0f69e9953f434"
+        },
+        {
+          "file": "slide-03.html",
+          "sha256": "5ce95eedfbc8ef5a685dd5c90657def2d0a4f8a9d47570c45ab9c4c83b7f78af"
+        },
+        {
+          "file": "slide-04.html",
+          "sha256": "04614b13b8c2035c2809843e6d3f50f06d910043625f16273d23874cf31b3656"
+        },
+        {
+          "file": "slide-05.html",
+          "sha256": "05d7e98e8eb9f9be474fea6c5a02a6c36f955a256dadc172fdc57c2071ea0e23"
+        },
+        {
+          "file": "slide-06.html",
+          "sha256": "a3481e10a0e05520a928f10a9c12b2468b488c88e9888ddf2bcddc58a3b598fa"
+        },
+        {
+          "file": "slide-07.html",
+          "sha256": "745a03883904699916861fdf242441cffbbde55e3ddffc9af3e8ff7c7d93da3b"
+        },
+        {
+          "file": "slide-08.html",
+          "sha256": "7a3c5fa6c934e41fe7d3fd081c53c72a2a509a2f94875a5b393401ae11adc0a6"
+        },
+        {
+          "file": "slide-09.html",
+          "sha256": "11fab698ca32b6f676ebaeaad2422f323b3720a017c7216fa495b7867e27c385"
+        },
+        {
+          "file": "slide-10.html",
+          "sha256": "ec5cde70c059a64fb891228288cea45098d67ade6dbe10f443899a69af7cd37d"
+        },
+        {
+          "file": "slide-11.html",
+          "sha256": "ad42e469c180c5598ffe9b78b5f2a34874c39b42a15839ce373f4cf716a9580e"
+        },
+        {
+          "file": "slide-12.html",
+          "sha256": "7422ca1ce70c9421058e9d5c36ba84b7d59c520f6ee8565fe2df89cba88815d2"
+        },
+        {
+          "file": "slide-13.html",
+          "sha256": "a1b5df1fdce36d0630cb8cdb50864fbbd4d47b4ec87622b1a9d456c9323b2385"
+        },
+        {
+          "file": "slide-14.html",
+          "sha256": "076cb6273f229238ed8ba2e3f21fddba35dcd880a5ff5fea750e29cac3d3c342"
+        },
+        {
+          "file": "slide-15.html",
+          "sha256": "df0963cb23cdacaebf99c645f493a7942dd951e3e365712997a689e3e1d810cf"
+        },
+        {
+          "file": "slide-16.html",
+          "sha256": "bf7f7f8ff843e7cd108d0ec28a65eb194deb06c5a17231760ecd272fd58e551e"
+        },
+        {
+          "file": "slide-17.html",
+          "sha256": "247bd84864611256924c34492c47792e9227eff16d1b96f74ff98e2785c8095e"
+        },
+        {
+          "file": "slide-18.html",
+          "sha256": "cdce477beca95e8fdfb8f165fd8a1894ede66ba3672565eea213548d09ce88eb"
+        }
+      ]
+    },
+    "passB": {
+      "label": "Pass B",
+      "verdict": "PASS",
+      "confidence": "High",
+      "unresolvedCritical": 0,
+      "blockingFindings": [],
+      "checks": [
+        {
+          "name": "Composition & hierarchy",
+          "status": "pass"
+        },
+        {
+          "name": "Typography & legibility",
+          "status": "pass"
+        },
+        {
+          "name": "Korean/CJK word-break integrity",
+          "status": "pass"
+        },
+        {
+          "name": "Review Litmus",
+          "status": "pass"
+        }
+      ],
+      "evidenceFiles": [
+        "slide-01.png",
+        "slide-02.png",
+        "slide-03.png",
+        "slide-04.png",
+        "slide-05.png",
+        "slide-06.png",
+        "slide-07.png",
+        "slide-08.png",
+        "slide-09.png",
+        "slide-10.png",
+        "slide-11.png",
+        "slide-12.png",
+        "slide-13.png",
+        "slide-14.png",
+        "slide-15.png",
+        "slide-16.png",
+        "slide-17.png",
+        "slide-18.png"
+      ],
+      "slideFingerprints": [
+        {
+          "file": "slide-01.html",
+          "sha256": "33abd49c542923d36ebb0a72b27cb4971124a3344da87037e3fe14349236142d"
+        },
+        {
+          "file": "slide-02.html",
+          "sha256": "69c806145250196ebafebba3ace0d691bad782e9d8b33c8d07b0f69e9953f434"
+        },
+        {
+          "file": "slide-03.html",
+          "sha256": "5ce95eedfbc8ef5a685dd5c90657def2d0a4f8a9d47570c45ab9c4c83b7f78af"
+        },
+        {
+          "file": "slide-04.html",
+          "sha256": "04614b13b8c2035c2809843e6d3f50f06d910043625f16273d23874cf31b3656"
+        },
+        {
+          "file": "slide-05.html",
+          "sha256": "05d7e98e8eb9f9be474fea6c5a02a6c36f955a256dadc172fdc57c2071ea0e23"
+        },
+        {
+          "file": "slide-06.html",
+          "sha256": "a3481e10a0e05520a928f10a9c12b2468b488c88e9888ddf2bcddc58a3b598fa"
+        },
+        {
+          "file": "slide-07.html",
+          "sha256": "745a03883904699916861fdf242441cffbbde55e3ddffc9af3e8ff7c7d93da3b"
+        },
+        {
+          "file": "slide-08.html",
+          "sha256": "7a3c5fa6c934e41fe7d3fd081c53c72a2a509a2f94875a5b393401ae11adc0a6"
+        },
+        {
+          "file": "slide-09.html",
+          "sha256": "11fab698ca32b6f676ebaeaad2422f323b3720a017c7216fa495b7867e27c385"
+        },
+        {
+          "file": "slide-10.html",
+          "sha256": "ec5cde70c059a64fb891228288cea45098d67ade6dbe10f443899a69af7cd37d"
+        },
+        {
+          "file": "slide-11.html",
+          "sha256": "ad42e469c180c5598ffe9b78b5f2a34874c39b42a15839ce373f4cf716a9580e"
+        },
+        {
+          "file": "slide-12.html",
+          "sha256": "7422ca1ce70c9421058e9d5c36ba84b7d59c520f6ee8565fe2df89cba88815d2"
+        },
+        {
+          "file": "slide-13.html",
+          "sha256": "a1b5df1fdce36d0630cb8cdb50864fbbd4d47b4ec87622b1a9d456c9323b2385"
+        },
+        {
+          "file": "slide-14.html",
+          "sha256": "076cb6273f229238ed8ba2e3f21fddba35dcd880a5ff5fea750e29cac3d3c342"
+        },
+        {
+          "file": "slide-15.html",
+          "sha256": "df0963cb23cdacaebf99c645f493a7942dd951e3e365712997a689e3e1d810cf"
+        },
+        {
+          "file": "slide-16.html",
+          "sha256": "bf7f7f8ff843e7cd108d0ec28a65eb194deb06c5a17231760ecd272fd58e551e"
+        },
+        {
+          "file": "slide-17.html",
+          "sha256": "247bd84864611256924c34492c47792e9227eff16d1b96f74ff98e2785c8095e"
+        },
+        {
+          "file": "slide-18.html",
+          "sha256": "cdce477beca95e8fdfb8f165fd8a1894ede66ba3672565eea213548d09ce88eb"
+        }
+      ]
+    }
+  },
+  "slideFingerprints": [
+    {
+      "file": "slide-01.html",
+      "sha256": "33abd49c542923d36ebb0a72b27cb4971124a3344da87037e3fe14349236142d"
+    },
+    {
+      "file": "slide-02.html",
+      "sha256": "69c806145250196ebafebba3ace0d691bad782e9d8b33c8d07b0f69e9953f434"
+    },
+    {
+      "file": "slide-03.html",
+      "sha256": "5ce95eedfbc8ef5a685dd5c90657def2d0a4f8a9d47570c45ab9c4c83b7f78af"
+    },
+    {
+      "file": "slide-04.html",
+      "sha256": "04614b13b8c2035c2809843e6d3f50f06d910043625f16273d23874cf31b3656"
+    },
+    {
+      "file": "slide-05.html",
+      "sha256": "05d7e98e8eb9f9be474fea6c5a02a6c36f955a256dadc172fdc57c2071ea0e23"
+    },
+    {
+      "file": "slide-06.html",
+      "sha256": "a3481e10a0e05520a928f10a9c12b2468b488c88e9888ddf2bcddc58a3b598fa"
+    },
+    {
+      "file": "slide-07.html",
+      "sha256": "745a03883904699916861fdf242441cffbbde55e3ddffc9af3e8ff7c7d93da3b"
+    },
+    {
+      "file": "slide-08.html",
+      "sha256": "7a3c5fa6c934e41fe7d3fd081c53c72a2a509a2f94875a5b393401ae11adc0a6"
+    },
+    {
+      "file": "slide-09.html",
+      "sha256": "11fab698ca32b6f676ebaeaad2422f323b3720a017c7216fa495b7867e27c385"
+    },
+    {
+      "file": "slide-10.html",
+      "sha256": "ec5cde70c059a64fb891228288cea45098d67ade6dbe10f443899a69af7cd37d"
+    },
+    {
+      "file": "slide-11.html",
+      "sha256": "ad42e469c180c5598ffe9b78b5f2a34874c39b42a15839ce373f4cf716a9580e"
+    },
+    {
+      "file": "slide-12.html",
+      "sha256": "7422ca1ce70c9421058e9d5c36ba84b7d59c520f6ee8565fe2df89cba88815d2"
+    },
+    {
+      "file": "slide-13.html",
+      "sha256": "a1b5df1fdce36d0630cb8cdb50864fbbd4d47b4ec87622b1a9d456c9323b2385"
+    },
+    {
+      "file": "slide-14.html",
+      "sha256": "076cb6273f229238ed8ba2e3f21fddba35dcd880a5ff5fea750e29cac3d3c342"
+    },
+    {
+      "file": "slide-15.html",
+      "sha256": "df0963cb23cdacaebf99c645f493a7942dd951e3e365712997a689e3e1d810cf"
+    },
+    {
+      "file": "slide-16.html",
+      "sha256": "bf7f7f8ff843e7cd108d0ec28a65eb194deb06c5a17231760ecd272fd58e551e"
+    },
+    {
+      "file": "slide-17.html",
+      "sha256": "247bd84864611256924c34492c47792e9227eff16d1b96f74ff98e2785c8095e"
+    },
+    {
+      "file": "slide-18.html",
+      "sha256": "cdce477beca95e8fdfb8f165fd8a1894ede66ba3672565eea213548d09ce88eb"
+    }
+  ],
+  "localAssetFingerprints": [
+    {
+      "file": "./assets/green_caplet_마그네슘_1.png",
+      "sha256": "3cc8fc4f41518a41184745efb32db76c906f50cd9536ee3d425c8c6583c189d3"
+    },
+    {
+      "file": "./assets/mint_circle_유산균_1.png",
+      "sha256": "303a7b4c46c6221e313df08f56cf06b39d50068cdd50ebbb64617b0e57e1aa2e"
+    },
+    {
+      "file": "./assets/white_caplet_비타민C_1.png",
+      "sha256": "40772d32a996b1a598f90b90f7c3f83e4854233dcfce5fc3943078f7f1e36094"
+    },
+    {
+      "file": "./assets/yellow_caplet_비타민D_1.png",
+      "sha256": "c41bb4e466724a53befb131a2f789051a9036d2830f27e40d6816a55cc9da588"
+    },
+    {
+      "file": "./assets/all_3_한번에_한_알_2_dosage-crop.png",
+      "sha256": "016f0c97d1d40f685b2caed57d7fb253e68c15e41864f0e8c37b54c147c80c87"
+    },
+    {
+      "file": "./assets/all_3_한번에_한_알_dosage-crop.png",
+      "sha256": "48b5fe717a24df2b852a4a3b63b99051b28c26b8d00252852059da8e86a98a51"
+    },
+    {
+      "file": "./assets/capsule_오메가3_1.png",
+      "sha256": "b3de013cf38cae192610e46f586340dd8e999c612661f4291c8bc90c407d02fc"
+    },
+    {
+      "file": "./assets/비타민D_오메가3_video-start.png",
+      "sha256": "8dddd7a67fff4c39d5809e33b4534dd5e967d79674fc9357f63c98a51af01210"
+    },
+    {
+      "file": "./assets/all_video-start.png",
+      "sha256": "23f21892a463b15c8dfaeb5ff3bd7c6bdec0626ae562ee870e970a8e565c8ee0"
+    },
+    {
+      "file": "./assets/pink_caplet_칼슘.png",
+      "sha256": "3f319feff0628eb1fb8244dde876c5927cb1b6faa29bdbfd9cda44386a4de025"
+    },
+    {
+      "file": "./assets/비타민D_칼슘_video-start.png",
+      "sha256": "fc50f392fa74f56b492f97364f5745d6aa090f568bcb374f0ecb08e342a1ff4b"
+    },
+    {
+      "file": "./assets/칼슘_마그네슘_video-start.png",
+      "sha256": "c2da3c04a0e1ab08f0eb727924774f22ec0cad4e44a1a806d22a4eff31d8d82e"
+    }
+  ],
+  "passReportFingerprints": [
+    {
+      "file": "pass-a-report.md",
+      "sha256": "152d724469970ba2344ff27e56dac70842b0707396b84ce2b75119720f75a0d1"
+    },
+    {
+      "file": "pass-b-report.md",
+      "sha256": "9bb6f4cefd62248e00677a3b70556c21a4e1b51317928e71aedf6addbeb3e435"
+    }
+  ],
+  "previewFingerprints": [
+    {
+      "file": "gate-preview/slide-01.png",
+      "sha256": "587572898b26651d03905cb53920c712d11fd0e08d22d4685459603207874573"
+    },
+    {
+      "file": "gate-preview/slide-02.png",
+      "sha256": "809a00ce3222a91e200cc7e9b092f0d88804baa548ed035ced91f07d3232c4d0"
+    },
+    {
+      "file": "gate-preview/slide-03.png",
+      "sha256": "555bfc04c79191d33ec3869a172b11319a059068dee7d9fb29358fcd1745dcee"
+    },
+    {
+      "file": "gate-preview/slide-04.png",
+      "sha256": "68aa2e02cf951b241f345a75d8751b535a1a7393f1510fe1d9e3245b8f60f998"
+    },
+    {
+      "file": "gate-preview/slide-05.png",
+      "sha256": "84801ba483dea9cacbf0f5efac0ce419144784f20e7afc34fcc9bf44fb2ce896"
+    },
+    {
+      "file": "gate-preview/slide-06.png",
+      "sha256": "23a0820e707f42fb73649b6b16969b2b6177a9514d2eddcf49586a654fae9f92"
+    },
+    {
+      "file": "gate-preview/slide-07.png",
+      "sha256": "5a52b64bec462e6c45d85725da6b00c083611d7c725312773915191cc44f6309"
+    },
+    {
+      "file": "gate-preview/slide-08.png",
+      "sha256": "3fdee5e39a7727b7b0bc5593b0ed5fc155243461b44f5cf81614ea87a5dc2d95"
+    },
+    {
+      "file": "gate-preview/slide-09.png",
+      "sha256": "f431c75929a52f9f4c2e225e9de48117c7a28a146a98b6cba262ee5792854444"
+    },
+    {
+      "file": "gate-preview/slide-10.png",
+      "sha256": "cc029688b4f68767ec735f951fcdb7c2b66d7be7b08c07ae09fce9c3fdc48db9"
+    },
+    {
+      "file": "gate-preview/slide-11.png",
+      "sha256": "2d16677873df0c4f3510d912ace221fabf80181bb39127d46958c302fee9b9ed"
+    },
+    {
+      "file": "gate-preview/slide-12.png",
+      "sha256": "8f1cf37eae4712341516c21fbecad5d7a11b2a8d432ef390c6293c182de3c522"
+    },
+    {
+      "file": "gate-preview/slide-13.png",
+      "sha256": "49224c1d3f1a63cf4f04a036feb0d3a59ff8b9619e1c61bb8bf84e69a8f828f0"
+    },
+    {
+      "file": "gate-preview/slide-14.png",
+      "sha256": "e8153853f0813fd036f3c5efa1afb33ecc4e2f3cefd7552ca2edda2466f2109e"
+    },
+    {
+      "file": "gate-preview/slide-15.png",
+      "sha256": "2be8c7dfb7eb753c84da1ea5f308e41f9ee26d473d6e9ff826e6b7a7218de126"
+    },
+    {
+      "file": "gate-preview/slide-16.png",
+      "sha256": "61f9946430eae3e7384ca5b3125a36f655c57b7b70bf77fd6cb4deafca760d45"
+    },
+    {
+      "file": "gate-preview/slide-17.png",
+      "sha256": "23a59e0cb0f03e5b3530522a8a91ca6e641e1ef0fe13b6c7fea4f6439a7f8bd4"
+    },
+    {
+      "file": "gate-preview/slide-18.png",
+      "sha256": "012ace6f2b662f7f540c61b89f8d65b0a88b2d4b9fc4c01a843e5f458ea3a3bd"
+    }
+  ],
+  "templateFidelity": {
+    "status": "not-applicable",
+    "slides": [],
+    "findings": [],
+    "referencePreviewFingerprints": []
+  }
+}
