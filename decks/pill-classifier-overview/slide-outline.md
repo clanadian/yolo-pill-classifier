@@ -5,7 +5,7 @@
 - **Topic**: YOLOv8 기반 알약 6종 탐지 프로젝트 — 개요·기대효과, 개발 과정에서 겪은 트러블슈팅, 실제 데모 결과, 고찰 순으로 구성
 - **Target Audience**: 팀/수업 발표 (기술적 배경이 있는 청중 가정)
 - **Tone/Mood**: 차분하고 신뢰감 있는 톤, 트러블슈팅 파트는 증상-원인-조치 구조로 구체적이고 담백하게, 결과 파트는 실제 스크린샷으로 증명
-- **Slide Count**: 18 slides
+- **Slide Count**: 19 slides
 - **Aspect Ratio**: 16:9
 - **style**: swiss-international-style (Pure white `#FFFFFF` 배경 — 사용자 요청에 따른 화이트 테마)
 - **mode**: html
@@ -116,7 +116,20 @@
 - **Title**: 결과
 - **Subtitle**: 실제 Jetson Nano에서 촬영한 라이브 데모 화면
 
-### Slide 13 - [결과 1] 클래스별 인식 결과
+### Slide 13 - [결과 1] 최종 모델 검증 수치
+
+- **Type**: Content (요약 통계 + 표)
+- **Key Message**: 검증 mAP50 0.974 · mAP50-95 0.803, 클래스별 세부 지표까지 확인
+- **Details**: `docs/report.md` 5번 항목("최종 모델 검증 결과", 2026-07-28) 기반
+  - 전체: precision 0.934 / recall 0.973 / mAP50 0.974 / mAP50-95 0.803
+  - 클래스별 표(P/R/mAP50/mAP50-95): capsule 0.923/1.000/0.995/0.821, green_caplet
+    0.950/1.000/0.995/0.870, mint_circle 0.934/0.960/0.929/0.788, pink_caplet
+    0.961/1.000/0.995/0.831, white_caplet 0.960/0.889/0.947/0.645, yellow_caplet
+    0.874/0.990/0.985/0.865
+  - white_caplet이 recall·mAP50-95 모두 최하위 — 트러블슈팅 3(조명 오분류) 잔여 약점과 연결
+  - 검증 조건: `yolo val model=weights/best.pt data=dataset/data.yaml imgsz=640` (GTX 1660, val 161장)
+
+### Slide 14 - [결과 2] 클래스별 인식 결과
 
 - **Type**: Content (이미지 그리드, 2x3 또는 3x2)
 - **Key Message**: 6개 클래스 모두 실시간으로 정확히 인식되고, 화면에는 영양제 이름으로 표시됨
@@ -128,7 +141,7 @@
   - `demo/white_caplet_비타민C_1.png` — white_caplet → 비타민C
   - `demo/yellow_caplet_비타민D_1.png` — yellow_caplet → 비타민D
 
-### Slide 14 - [결과 2] 다중 인식 & 조합 안내 결과
+### Slide 15 - [결과 3] 다중 인식 & 조합 안내 결과
 
 - **Type**: Content (이미지 그리드)
 - **Key Message**: 여러 알약을 동시에 비춰도 각각 인식하고, 조합 규칙이 맞으면 배너로 안내
@@ -138,20 +151,20 @@
   - `demo/칼슘_마그네슘.png` — 확인 필요 조합 배너 예시("흡수 경로를 나눠 써요")
   - `demo/비타민D_오메가3.png`, `demo/비타민D_마그네슘.png`, `demo/비타민C_유산균.png` — 추가 조합 예시(디자인 단계에서 지면에 맞춰 일부만 선택 가능)
 
-### Slide 15 - [결과 3] 복용량 안내 결과
+### Slide 16 - [결과 4] 복용량 안내 결과
 
 - **Type**: Content
 - **Key Message**: 같은 종류가 권장 개수보다 많이 잡히면 실제 개수를 반영한 경고가 즉석에서 생성됨
 - **Details / 이미지**:
   - `demo/all_3_한번에_한_알.png`, `demo/all_3_한번에_한_알_2.png` — 권장량 초과 감지 시 "한 번엔 N알만 드세요" 안내 화면
 
-### Slide 16 - [고찰] Section Divider
+### Slide 17 - [고찰] Section Divider
 
 - **Type**: Section Divider
 - **Title**: 고찰
 - **Subtitle**: 이번 프로젝트에서 배운 것과 남은 한계
 
-### Slide 17 - [고찰] 배운 점과 한계
+### Slide 18 - [고찰] 배운 점과 한계
 
 - **Type**: Content
 - **Key Message**: 자동화는 "성공 로그"가 아니라 실제 결과값을 검증해야 신뢰할 수 있다
@@ -161,7 +174,7 @@
   - 로컬 개발 환경과 실제 배포 보드(Jetson)의 라이브러리 버전 차이에서만 드러나는 문제가 있었음(예: model.names 이슈) — 실기기 테스트가 필수적
   - 한계: 탐지 클래스는 색상/모양 기반이라 실제 성분을 특정하지 못함. 조합/타이밍/복용량 안내는 사용자가 등록한 규칙일 뿐 의학적 판단이 아니며, 화면에 "참고용 데모" 문구를 상시 노출해 명확히 함
 
-### Slide 18 - 마무리
+### Slide 19 - 마무리
 
 - **Type**: Closing
 - **Message**: 데이터셋 구축부터 실시간 데모까지 — 각 단계의 문제를 원인부터 추적해 해결한 과정을 통해 완성한 파이프라인. Q&A
