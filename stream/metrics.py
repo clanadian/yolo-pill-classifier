@@ -13,6 +13,7 @@ FIELDNAMES = [
     "elapsed_s",
     "frame_id",
     "warmup",
+    "detection_count",
     "capture_ms",
     "resize_ms",
     "model_total_ms",
@@ -26,7 +27,7 @@ FIELDNAMES = [
     "total_ms",
 ]
 
-LATENCY_FIELDS = FIELDNAMES[4:]
+LATENCY_FIELDS = FIELDNAMES[5:]
 
 
 def percentile(values, percent):
@@ -68,6 +69,7 @@ class LatencyRecorder:
             "elapsed_s": "{:.6f}".format(elapsed_s),
             "frame_id": int(frame_id),
             "warmup": int(elapsed_s < self.warmup_secs),
+            "detection_count": int(timing.get("detection_count", 0)),
         }
         for field in LATENCY_FIELDS:
             row[field] = "{:.6f}".format(float(timing.get(field, 0.0)))

@@ -163,6 +163,9 @@ def capture_loop(
         ok, frame = cap.read()
         capture_ms = (time.perf_counter() - capture_start) * 1000.0
         if not ok:
+            if args.loop_source and not args.source.isdigit():
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                continue
             time.sleep(0.1)
             continue
 
@@ -172,7 +175,12 @@ def capture_loop(
         resize_ms = (time.perf_counter() - resize_start) * 1000.0
 
         annotated, counts, infer_timing = infer_and_annotate(
-            model, frame, conf=args.conf, iou=args.iou
+            model,
+            frame,
+            conf=args.conf,
+            iou=args.iou,
+            draw=not args.no_draw,
+            fast_draw=args.fast_draw,
         )
 
         rules_start = time.perf_counter()
@@ -210,6 +218,7 @@ def capture_loop(
                 infer_timing,
                 capture_ms=capture_ms,
                 resize_ms=resize_ms,
+                detection_count=sum(counts.values()),
                 rules_ms=rules_ms,
                 encode_ms=encode_ms,
                 total_ms=total_ms,
@@ -326,6 +335,10 @@ def parse_args():
         "--source", default="0", help="카메라 인덱스 또는 영상 경로 (기본: 0)"
     )
     parser.add_argument(
+        "--loop-source", action="store_true", dest="loop_source",
+        help="영상 파일이 끝나면 처음부터 반복 재생",
+    )
+    parser.add_argument(
         "--host", default="0.0.0.0", help="바인드 주소 (기본: 0.0.0.0, LAN 전체 공개)"
     )
     parser.add_argument("--port", type=int, default=8000)
@@ -349,6 +362,15 @@ def parse_args():
     parser.add_argument(
         "--jpeg-quality", type=int, default=80, dest="jpeg_quality",
         help="JPEG 인코딩 품질 0~100 (기본 80)",
+    )
+    draw_group = parser.add_mutually_exclusive_group()
+    draw_group.add_argument(
+        "--no-draw", action="store_true", dest="no_draw",
+        help="bbox/라벨 렌더링을 생략해 draw 비용을 분리 측정",
+    )
+    draw_group.add_argument(
+        "--fast-draw", action="store_true", dest="fast_draw",
+        help="OpenCV 기반 bbox/영문 라벨로 빠르게 렌더링",
     )
     parser.add_argument(
         "--combos", type=Path, default=DEFAULT_COMBOS,

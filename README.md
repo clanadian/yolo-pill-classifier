@@ -52,7 +52,7 @@ YOLOv8을 학습해 6종 알약을 실시간으로 탐지하고, Jetson Nano에�
 | 검증 mAP50 | **0.974** |
 | 검증 mAP50-95 | **0.803** |
 | 추론 플랫폼 | Jetson Nano (JetPack 4.6, t210ref) |
-| 실측 FPS | 초기 5-7fps → 약 1분 후 평균 3.8fps 수준으로 안정화 (대표값 약 3.5-4fps) |
+| 실측 FPS | PyTorch 6.34 FPS → TensorRT FP16 + fast draw **13.77 FPS** (고정 입력, 각 3회) |
 | 웹 UI | FastAPI + WebSocket |
 
 ### 검증 결과
@@ -125,19 +125,24 @@ Otsu Threshold 기반 자동 Bounding Box 검출이 흰 배경+흰 알약처럼 
 
 **해결**: 클래스별 LUT(밝기+채도만 보정)를 실측 학습해 적용했다. 클래스를 섞어 학습했을 때 평균 오차 2.59/255였던 것을 클래스별로 분리해 0.15-1.3/255까지 줄였다.
 
-### 3. Jetson Nano FPS 저하 원인 분석
+### 3. Jetson Nano 병목 분석 및 최적화
 
-`--max-fps 5`(목표 5fps)로 설정해 돌렸는데, 시작 직후엔 5-7fps로 목표를 웃돌다가 약 1분 뒤부터 3.3-4.3fps까지 떨어지는 현상을 발견했다. 우연이 아닌지 확인하기 위해 3회 독립 실행으로 재현 여부를 검증했다.
+과거 특정 SD카드 상태에서는 3.3~4.3 FPS 저하를 관찰했지만, 검증된 카드를
+같은 보드에 꽂은 후에는 재현되지 않아 보드 고유 결함 가설을 배제했다. 이후 입력
+차이를 없애려고 같은 900프레임 영상을 반복 재생하고 각 경로를 180초씩 3회 측정했다.
 
 ```
-목표(--max-fps)      5 fps
-시작 직후            5-7 fps    (목표 근접/상회)
-   │
-   ▼ (약 1분 경과)
-안정화 후            3.3-4.3 fps  (목표 미달, 대표값 약 3.5-4fps)
+PyTorch + 기본 draw             157.71ms / 6.34 FPS
+TensorRT FP16 + 기본 draw       135.01ms / 7.41 FPS
+TensorRT FP16 + OpenCV draw      72.65ms / 13.77 FPS
 ```
 
-**원인 분석**: 온도는 26→30°C 수준으로 열 스로틀링은 아니었다. GPU 사용률은 버스티하게 움직이는 반면 유휴 구간에도 CPU 한 코어가 꾸준히 점유돼 있어, 병목은 GPU 연산이 아니라 캡처→전처리→인코딩을 순차 처리하는 단일 스레드 구조로 추정된다. (프로파일러로 직접 확인하지 못해 추정 단계 — TensorRT 변환 등 개선 여지는 한계 섹션 참고.)
+**원인과 개선**: 단계별 계측 결과 순수 inference는 평균 63.14ms, 한글 bbox
+렌더링은 69.44ms였다. TensorRT FP16으로 inference를 46.26ms까지 줄인 뒤,
+PIL 기반 `result.plot()` 대신 OpenCV 경량 렌더링을 선택 옵션으로 추가해 draw를
+1.12ms로 줄였다. 같은 square validation 조건에서 FP16의 정확도 저하는 없었고,
+GPU 최고 온도는 32°C였다. 자세한 조건과 P95는
+[최적화 로드맵](docs/jetson_yolov8_optimization_roadmap.md)에 기록했다.
 
 ---
 
@@ -145,7 +150,8 @@ Otsu Threshold 기반 자동 Bounding Box 검출이 흰 배경+흰 알약처럼 
 
 - 6종 알약 실시간 탐지 및 복용 정보 제공 시스템 구현
 - 검증 mAP50 0.974, mAP50-95 0.803 달성
-- Jetson Nano에서 평균 3.5-4 FPS 실시간 추론 검증
+- Jetson Nano 고정 입력 3회 측정에서 PyTorch 6.34 FPS → TensorRT FP16 +
+  OpenCV 렌더링 13.77 FPS로 처리율 2.17배 개선
 
 ## 역할 분담
 
@@ -163,7 +169,9 @@ Otsu Threshold 기반 자동 Bounding Box 검출이 흰 배경+흰 알약처럼 
 
 - 현재 6종 알약만 지원 — 반투명 캡슐(`purple_pill`)은 배경에 따라 색이 크게 달라지는 데이터 일관성 문제로 제외됨
 - 단일 카메라·한정된 촬영 환경(조명/배경)에서 수집한 데이터라 일반화에 한계 있음 — `white_caplet`은 색감 보정 후에도 mAP50-95 0.645로 전 클래스 중 최저, 잔여 약점으로 남음
-- Jetson Nano에서는 실시간성이 제한적(약 3.5-4fps) — TensorRT 변환이나 더 가벼운 모델로 개선 여지 있음 ([stream/README.md](stream/README.md) 참고, 자동화는 안 돼있음)
+- Jetson Nano의 기본 `result.plot()` 한글 렌더링이 평균 69.44ms를 차지 —
+  TensorRT FP16과 선택형 `--fast-draw` 경로로 개선했으며 자세한 조건과 정확도 비교는
+  [최적화 로드맵](docs/jetson_yolov8_optimization_roadmap.md)에 기록
 
 ---
 
@@ -241,5 +249,15 @@ Jetson Nano처럼 느린 보드에서는 해상도/전송 프레임을 낮춰서
 ```bash
 python3 stream/server.py --width 480 --height 360 --max-fps 5
 ```
+
+Jetson에서 빌드한 TensorRT 엔진과 경량 bbox 렌더링을 사용할 때:
+
+```bash
+python3 stream/server.py --model model/best_fp16.engine \
+  --fast-draw --width 480 --height 360 --max-fps 5
+```
+
+TensorRT 엔진은 Jetson의 GPU/TensorRT 버전에 종속되므로 저장소에는 포함하지 않는다.
+PyTorch 기준선과 TensorRT 비교 결과는 [최적화 로드맵](docs/jetson_yolov8_optimization_roadmap.md)을 참고한다.
 
 브라우저로 `http://<보드 IP>:8000/` 접속하면 웹캠 영상에 탐지 결과가 얹혀 보인다. Jetson Nano 세팅, 옵션, 성능 관련 참고사항은 `stream/README.md` 참고.

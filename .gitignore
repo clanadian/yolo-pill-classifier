@@ -23,6 +23,8 @@ yolov8n.pt
 yolov8*.pt
 best.pt
 !model/best.pt
+*.onnx
+*.engine
 
 # IDEs & System
 .vscode/

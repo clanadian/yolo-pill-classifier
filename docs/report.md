@@ -185,4 +185,52 @@ median blur 기반 shading correction(`flatten_background()`)을 추가하여 �
 
 온도는 26→30°C로 유지되어 열 스로틀링은 발생하지 않았다.
 
-GPU는 버스티하게 동작하고 CPU 한 코어가 지속적으로 사용되어, 현재 병목은 capture → preprocessing → encoding의 단일 스레드 처리로 추정된다.
+GPU는 버스티하게 동작하고 CPU 한 코어가 지속적으로 사용되어, 당시에는 병목을
+capture → preprocessing → encoding의 단일 스레드 처리로 추정했다. 아래 후속
+계측에서 실제 지배 구간은 inference와 draw로 구체화했다.
+
+> 이 저하는 당시 `.107` 보드와 기존 SD카드 조합에서만 관찰됐다. 이후 검증된
+> `.108` SD카드를 `.107` 보드에 꽂은 카드 스왑 테스트에서는 6.2~6.5 FPS로
+> 안정적이어서 보드 고유 하드웨어 결함 가설은 배제했다. 기존 카드는 초기화되어
+> 당시 파일시스템·백그라운드 프로세스·전원 상태 중 세부 원인은 확정할 수 없다.
+
+---
+
+## Jetson Nano Controlled Optimization (2026-08-13)
+
+카메라 장면을 MJPEG AVI(640×480, 900프레임)로 고정하고, 서버 입력은 480×360,
+warm-up 30초, 실행 180초, 브라우저 WebSocket 연결 상태로 통일했다. 각 최종 비교는
+3회 반복했고 CSV에는 프레임별 단계 시간과 검출 수를 기록했다.
+
+| 경로 | 반복 | FPS | inference 평균 | draw 평균 | total 평균 | total P95 |
+|---|---:|---:|---:|---:|---:|---:|
+| PyTorch + 기본 한글 draw | 3 | 6.34 | 63.14ms | 69.44ms | 157.71ms | 163.83ms |
+| PyTorch + draw 생략(격리 실험) | 1 | 11.51 | 62.55ms | 0ms | 86.89ms | 89.34ms |
+| TensorRT FP16 + 기본 한글 draw | 3 | 7.41 | 46.28ms | 62.90ms | 135.01ms | 159.12ms |
+| TensorRT FP16 + OpenCV fast draw | 3 | **13.77** | **46.26ms** | **1.12ms** | **72.65ms** | **74.02ms** |
+
+TensorRT FP16만 적용하면 순수 inference가 26.7%, 전체 시간이 14.4% 감소했다.
+추론 개선 후에는 기본 `result.plot()`이 가장 큰 병목이 됐다. 한글 라벨 때문에
+사용되는 PIL 기반 렌더링 대신 OpenCV로 bbox·신뢰도·짧은 영문 라벨을 그리는 선택형
+`--fast-draw`를 추가하자 draw가 69.44ms에서 1.12ms로 줄었다. 조합·복용량 등
+웹 UI의 한글 메시지와 검출 집계 이름은 그대로 유지한다.
+
+최종 경로는 기준선 대비 total latency 53.9% 감소, 처리율 2.17배 증가다. 세 실행의
+total 평균은 72.71/72.66/72.56ms로 재현됐고 GPU 최고 온도는 32°C였다.
+`capture_ms`는 평균 2.86ms에 불과해 처리량의 병목이 아니므로 캡처/추론 스레드 추가
+분리는 이번 범위에서 생략했다.
+
+### 정확도 비교 조건
+
+고정 shape TensorRT 엔진은 640×640 square 입력을 사용한다. 최초 PyTorch validation의
+직사각형 배치(`rect=True`) 결과와 직접 비교하면 전처리 조건이 달라 오해가 생기므로,
+두 backend 모두 `imgsz=640`, `batch=1`, `rect=False`로 맞췄다.
+
+| Backend | mAP50 | mAP50-95 |
+|---|---:|---:|
+| PyTorch FP32, square | 0.96046 | 0.68069 |
+| TensorRT FP16, square | 0.96073 | 0.68150 |
+
+161장/158개 객체 validation에서 FP16 정확도는 동일 조건 PyTorch 대비 오차 범위 내
+유지됐다. 기존의 더 높은 `rect=True` 수치(0.97603/0.81132)는 입력 정책이 다르므로
+TensorRT 변환 전후 표에는 사용하지 않는다.

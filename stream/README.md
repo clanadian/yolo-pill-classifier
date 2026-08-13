@@ -42,6 +42,36 @@ python3 -u stream/server.py \
 JPEG encode, 전체 처리시간이 CSV에 저장되고, warm-up 이후의 평균/P50/P95가
 콘솔에 출력된다. `--metrics-csv`를 주지 않으면 계측값을 수집하지 않는다.
 
+동일한 저장 영상을 반복 재생하거나 bbox 렌더링 비용을 분리할 때는 다음 옵션을 쓴다.
+
+```bash
+python3 -u stream/server.py --source benchmark.avi --loop-source \
+  --metrics-csv results/baseline_video.csv
+
+python3 -u stream/server.py --source benchmark.avi --loop-source --no-draw \
+  --metrics-csv results/no_draw_video.csv
+
+python3 -u stream/server.py --source benchmark.avi --loop-source --fast-draw \
+  --metrics-csv results/fast_draw_video.csv
+```
+
+`--fast-draw`는 느린 PIL 기반 한글 bbox 라벨 대신 OpenCV 기반 영문 라벨을
+사용한다. 조합/복용량 등 웹 UI의 한글 안내와 검출 집계 이름은 유지된다.
+
+### TensorRT 엔진 빌드(Jetson에서만)
+
+```bash
+python3 stream/build_tensorrt.py --weights model/best.pt --precision fp16
+
+python3 stream/server.py --model model/best_fp16.engine --fast-draw \
+  --width 480 --height 360 --max-fps 5
+```
+
+스크립트는 ONNX opset 12를 내보내고 `trtexec`로 엔진을 만든 뒤 Ultralytics가
+요구하는 task/names/imgsz 메타데이터를 붙인다. JetPack 4.6의 TensorRT 8.0과
+NumPy 1.24 사이 `np.bool` 호환은 모델 로더가 처리한다. 엔진은 GPU와 TensorRT
+버전에 종속되고 빌드에 수 분이 걸리므로 `.onnx`/`.engine`은 Git에서 제외한다.
+
 전체 옵션은 `python stream/server.py --help` 참고.
 
 ## Jetson Nano 참고 사항
@@ -56,16 +86,13 @@ JPEG encode, 전체 처리시간이 CSV에 저장되고, warm-up 이후의 평�
 - 만약 처음부터 환경을 새로 구성해야 한다면, NVIDIA의 `l4t-ml` / `l4t-pytorch`
   Docker 컨테이너를 사용하는 것이 현실적인 방법이다(이 저장소는 해당 컨테이너
   구성을 자동화하지 않는다).
-- Maxwell GPU(128 코어)에서 순수 `.pt` 추론은 느리다. 실측(480x360, `--max-fps 5`,
-  전력모드 MAXN·클럭 최대 고정, 3회 독립 실행 재현): 시작 직후 5-7fps →
-  1분 전후로 **3.3-4.3fps로 수렴**(대표값 약 3.5-4fps). 온도는 30°C 안팎으로 열
-  스로틀링은 아니고, GPU는 대부분 유휴 상태라 GPU 연산 자체가 병목도 아니다(자세한
-  측정 방법·근거는 `docs/report.md` 6번 항목 참고). `--width`/`--height`로
-  해상도를 낮추고 `--max-fps`로 전송 속도를 제한하는 것은 이 때문이다. 콘솔에
-  5초 주기로 찍히는 `inference fps` 로그로 실제 속도를 확인할 수 있다.
-- 더 빠르게 하려면 `model.export(format="engine")`(TensorRT)로 변환 후
-  `--model best.engine`으로 실행하는 것을 고려할 수 있다(이 저장소에서 자동화하지
-  않음, 수동 후속 작업).
+- 고정 영상·480×360·warm-up 30초·180초·3회 조건에서 PyTorch 기본 경로는
+  6.34 FPS, TensorRT FP16 + `--fast-draw`는 13.77 FPS였다. inference는
+  63.14→46.26ms, draw는 69.44→1.12ms로 줄었다. GPU 최고 온도는 32°C였다.
+  과거 특정 SD카드 상태에서 관찰한 3.3~4.3 FPS 저하는 카드 스왑 후 재현되지
+  않았으므로 일반 성능값으로 사용하지 않는다. 전체 방법과 정확도 비교는
+  [`../docs/jetson_yolov8_optimization_roadmap.md`](../docs/jetson_yolov8_optimization_roadmap.md)
+  참고.
 
 ## 조합 배너 (`combos.json`)
 
