@@ -8,7 +8,8 @@ USB 웹캠 영상에 YOLO 탐지 결과(bbox+라벨)를 입혀 WebSocket으로
 사용법:
     python stream/server.py
     python stream/server.py --source 0 --width 480 --height 360 --max-fps 5
-    python stream/server.py --model weights/best.pt --device 0
+    python stream/server.py --model model/best.pt --device 0
+    python stream/server.py --metrics-csv results/baseline_run1.csv
 
 동작 방식:
     카메라 읽기 + 추론은 블로킹 작업이라 별도 스레드(capture_loop)에서 돌리고,
@@ -31,9 +32,10 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 
 from detector import infer_and_annotate, load_model
+from metrics import LatencyRecorder
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_MODEL = REPO_ROOT / "weights" / "best.pt"
+DEFAULT_MODEL = REPO_ROOT / "model" / "best.pt"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 DEFAULT_COMBOS = Path(__file__).resolve().parent / "combos.json"
 DEFAULT_TIMINGS = Path(__file__).resolve().parent / "timing.json"
@@ -144,23 +146,36 @@ class FrameBroadcaster:
             return self.latest, self.combo, self.timings, self.dosage, self.frame_id
 
 
-def capture_loop(cap, model, broadcaster, args, combo_rules, timing_rules, dosage_rules, stop_event):
+def capture_loop(
+    cap, model, broadcaster, args, combo_rules, timing_rules, dosage_rules,
+    stop_event, metrics,
+):
     """카메라 읽기 + 추론을 반복하는 블로킹 루프. 별도 스레드에서 돈다."""
     frame_count = 0
     window_start = time.monotonic()
     last_seen = {}  # 클래스 이름 -> (마지막으로 감지된 monotonic 시각, 그때의 개수)
+    total_frame_count = 0
 
     while not stop_event.is_set():
+        loop_start = time.perf_counter()
+
+        capture_start = time.perf_counter()
         ok, frame = cap.read()
+        capture_ms = (time.perf_counter() - capture_start) * 1000.0
         if not ok:
             time.sleep(0.1)
             continue
 
+        resize_start = time.perf_counter()
         if args.width and args.height:
             frame = cv2.resize(frame, (args.width, args.height))
+        resize_ms = (time.perf_counter() - resize_start) * 1000.0
 
-        annotated, counts = infer_and_annotate(model, frame, conf=args.conf, iou=args.iou)
+        annotated, counts, infer_timing = infer_and_annotate(
+            model, frame, conf=args.conf, iou=args.iou
+        )
 
+        rules_start = time.perf_counter()
         now = time.monotonic()
         for c, n in counts.items():
             last_seen[c] = (now, n)
@@ -177,12 +192,29 @@ def capture_loop(cap, model, broadcaster, args, combo_rules, timing_rules, dosag
             if c in timing_rules
         ]
         active_dosage = build_dosage_notices(stable_counts, dosage_rules)
+        rules_ms = (time.perf_counter() - rules_start) * 1000.0
 
+        encode_start = time.perf_counter()
         ok2, buf = cv2.imencode(
             ".jpg", annotated, [cv2.IMWRITE_JPEG_QUALITY, args.jpeg_quality]
         )
+        encode_ms = (time.perf_counter() - encode_start) * 1000.0
         if ok2:
             broadcaster.publish(buf.tobytes(), active_combo, active_timings, active_dosage)
+
+        total_frame_count += 1
+        total_ms = (time.perf_counter() - loop_start) * 1000.0
+        metrics.add(
+            total_frame_count,
+            dict(
+                infer_timing,
+                capture_ms=capture_ms,
+                resize_ms=resize_ms,
+                rules_ms=rules_ms,
+                encode_ms=encode_ms,
+                total_ms=total_ms,
+            ),
+        )
 
         # 체감이 아니라 수치로 FPS를 확인할 수 있게 주기적으로 로그를 남긴다
         # (Jetson Nano처럼 느린 보드에서 기대치와 비교하기 위함).
@@ -213,16 +245,26 @@ def create_app(args) -> FastAPI:
         combo_rules = load_combo_rules(args.combos)
         timing_rules = load_timing_rules(args.timings)
         dosage_rules = load_dosage_rules(args.dosage)
+        metrics = LatencyRecorder(args.metrics_csv, args.warmup_secs)
+        if metrics.enabled:
+            print(
+                f"[metrics] latency 기록 활성화: {args.metrics_csv} "
+                f"(warm-up {args.warmup_secs:g}초)"
+            )
 
         thread = threading.Thread(
             target=capture_loop,
-            args=(cap, model, broadcaster, args, combo_rules, timing_rules, dosage_rules, stop_event),
+            args=(
+                cap, model, broadcaster, args, combo_rules, timing_rules,
+                dosage_rules, stop_event, metrics,
+            ),
             daemon=True,
         )
         thread.start()
 
         state["cap"] = cap
         state["thread"] = thread
+        state["metrics"] = metrics
         print(f"[stream] 준비 완료. http://{args.host}:{args.port}/ 에서 확인하세요.")
 
     @app.on_event("shutdown")
@@ -234,6 +276,9 @@ def create_app(args) -> FastAPI:
         cap = state.get("cap")
         if cap is not None:
             cap.release()
+        metrics = state.get("metrics")
+        if metrics is not None:
+            metrics.close()
 
     @app.websocket("/ws")
     async def ws_endpoint(ws: WebSocket):
@@ -275,7 +320,7 @@ def parse_args():
     )
     parser.add_argument(
         "--model", type=Path, default=DEFAULT_MODEL,
-        help="가중치 경로 (기본: weights/best.pt)",
+        help="가중치 경로 (기본: model/best.pt)",
     )
     parser.add_argument(
         "--source", default="0", help="카메라 인덱스 또는 영상 경로 (기본: 0)"
@@ -316,6 +361,14 @@ def parse_args():
     parser.add_argument(
         "--dosage", type=Path, default=DEFAULT_DOSAGE,
         help="복용량 안내 파일 경로 (기본: stream/dosage.json, 없으면 기능 비활성화)",
+    )
+    parser.add_argument(
+        "--metrics-csv", type=Path, default=None, dest="metrics_csv",
+        help="프레임별 latency CSV 저장 경로 (기본: 저장 안 함)",
+    )
+    parser.add_argument(
+        "--warmup-secs", type=float, default=30.0, dest="warmup_secs",
+        help="latency 요약에서 제외할 초기 warm-up 시간(초, 기본 30)",
     )
     return parser.parse_args()
 

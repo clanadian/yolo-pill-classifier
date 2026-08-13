@@ -156,7 +156,7 @@ median blur 기반 shading correction(`flatten_background()`)을 추가하여 �
 
 ## Validation Result
 
-`yolo val model=weights/best.pt data=dataset/data.yaml imgsz=640` (GTX 1660, val 161장)
+`yolo val model=model/best.pt data=dataset/data.yaml imgsz=640` (GTX 1660, val 161장)
 
 전체: precision 0.934 / recall 0.973 / **mAP50 0.974 / mAP50-95 0.803**, 추론 5.0ms/image
 

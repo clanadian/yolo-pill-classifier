@@ -76,10 +76,10 @@ YOLOv8을 학습해 6종 알약을 실시간으로 탐지하고, Jetson Nano에�
 색감 보정 (LUT, preprocess/color_fix/)
     │
     ▼
-YOLOv8 학습 (train_yolo.py)
+YOLOv8 학습 (training/train_yolo.py)
     │
     ▼
-weights/best.pt
+model/best.pt
     │
     ▼
 Jetson Nano 추론 (stream/server.py)
@@ -155,7 +155,7 @@ Otsu Threshold 기반 자동 Bounding Box 검출이 흰 배경+흰 알약처럼 
 - train/val 데이터셋 생성 및 품질 검수(`dataset/`, `data.yaml`)
 
 ### 모델 학습·배포
-- YOLOv8 학습 파이프라인 구축 및 Jetson Nano 배포(`train/train_yolo.py`)
+- YOLOv8 학습 파이프라인 구축 및 Jetson Nano 배포(`training/train_yolo.py`)
 - FastAPI·WebSocket 기반 실시간 추론 UI 구현(`stream/`)
 - 복용 타이밍·복용량·조합 주의 기능 구현
 
@@ -177,11 +177,11 @@ Otsu Threshold 기반 자동 Bounding Box 검출이 흰 배경+흰 알약처럼 
 .
 ├── dataset/              # 학습용 최종 데이터셋 (images/labels train,val + data.yaml)
 ├── preprocess/           # 라벨링 파이프라인: auto_label.py, split_and_build.py
-├── train/                # 학습 스크립트: train_yolo.py
-├── notebooks/
-│   └── train_on_colab.ipynb  # Colab(T4 GPU)에서 학습하고 싶을 때
-├── weights/
-│   └── best.pt           # 학습된 가중치 (--export-best로 생성, 데모가 읽는 기본 경로)
+├── training/             # 학습 코드와 Colab 노트북
+│   ├── train_yolo.py
+│   └── train_on_colab.ipynb
+├── model/
+│   └── best.pt           # 학습된 배포 모델 (--export-best로 갱신)
 ├── stream/               # Jetson Nano 실시간 웹 스트리밍 데모
 ├── docs/
 └── requirements.txt
@@ -217,18 +217,18 @@ python preprocess/split_and_build.py --input_dir <원본사진폴더> --output_d
 로컬 GPU:
 
 ```bash
-python train/train_yolo.py --device 0 --export-best
+python training/train_yolo.py --device 0 --export-best
 ```
 
-`--data`를 안 주면 `dataset/` → `dataset_yolo/` → `dataset_yolo_colab/` 순으로 자동 탐지하고, 학습 전에 라벨/클래스 정합성을 먼저 검사한다. 자세한 옵션은 `python train/train_yolo.py --help` 참고.
+`--data`를 안 주면 `dataset/` → `dataset_yolo/` → `dataset_yolo_colab/` 순으로 자동 탐지하고, 학습 전에 라벨/클래스 정합성을 먼저 검사한다. 자세한 옵션은 `python training/train_yolo.py --help` 참고.
 
-Colab(T4 GPU)에서 돌리려면 `notebooks/train_on_colab.ipynb`를 열어서 순서대로 실행하면 된다(저장소를 clone하면 코드와 `dataset/`이 같이 받아짐).
+Colab(T4 GPU)에서 돌리려면 `training/train_on_colab.ipynb`를 열어서 순서대로 실행하면 된다(저장소를 clone하면 코드와 `dataset/`이 같이 받아짐).
 
-학습이 끝나면 `runs/`에 결과가 저장되고, `--export-best`를 주면 `weights/best.pt`로 복사된다.
+학습이 끝나면 `runs/`에 결과가 저장되고, `--export-best`를 주면 `model/best.pt`로 복사된다.
 
 ## 실시간 데모 (Jetson Nano)
 
-학습된 가중치 `weights/best.pt`가 저장소에 일반 파일로 포함되어 있어(Git LFS 아님, clone하면 바로 받아짐) 따로 학습하지 않아도 바로 실행할 수 있다.
+학습된 가중치 `model/best.pt`가 저장소에 일반 파일로 포함되어 있어(Git LFS 아님, clone하면 바로 받아짐) 따로 학습하지 않아도 바로 실행할 수 있다.
 
 > Jetson Nano는 JetPack 버전 제약 때문에 `ultralytics`/`opencv-python`을 `requirements.txt`로 그냥 설치하기 어려운 경우가 많다. YOLOv8 추론이 이미 되는 환경이라는 전제로, 여기서 새로 필요한 건 `fastapi`·`uvicorn[standard]`뿐이다 (둘 다 `requirements.txt`에 포함되어 있음). 처음부터 새로 세팅해야 한다면 `stream/README.md`의 Jetson Nano 참고 사항을 먼저 확인한다.
 

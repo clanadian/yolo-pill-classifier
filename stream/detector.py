@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-detector.py
-yolov8_cam.py의 모델 로드 + 추론 + 시각화 패턴을 공용 함수로 뽑아둔 모듈.
-stream/server.py가 이 함수들을 그대로 사용해, 탐지 로직이 여러 곳에서
-따로 구현되지 않게 한다.
-"""
+"""YOLO 모델 로드, 추론, 시각화와 단계별 추론 시간 측정."""
+
+from time import perf_counter
 
 from ultralytics import YOLO
 
@@ -33,19 +30,35 @@ def load_model(weights_path, device=None):
 
 
 def infer_and_annotate(model, frame, conf=0.25, iou=0.75):
-    """프레임 한 장에 대해 추론하고, (bbox+라벨이 그려진 프레임, 클래스 이름 ->
-    개수 딕셔너리)를 돌려준다. 개수는 "한 알만 드세요" 같은 복용량 안내
-    (server.py의 build_dosage_notices)에, 클래스 존재 여부는 조합 배너 매칭
-    (match_combo)에 쓰인다."""
+    """프레임을 추론해 시각화 결과, 클래스 개수, 단계별 시간을 반환한다."""
+    model_start = perf_counter()
     results = model(frame, conf=conf, iou=iou, verbose=False)
+    model_total_ms = (perf_counter() - model_start) * 1000.0
     result = results[0]
-    annotated = result.plot()
 
+    draw_start = perf_counter()
+    annotated = result.plot()
+    draw_ms = (perf_counter() - draw_start) * 1000.0
+
+    count_start = perf_counter()
     counts = {}
     if result.boxes is not None and len(result.boxes) > 0:
         names = result.names
         for c in result.boxes.cls.tolist():
             name = names[int(c)]
             counts[name] = counts.get(name, 0) + 1
+    count_ms = (perf_counter() - count_start) * 1000.0
 
-    return annotated, counts
+    # Ultralytics가 내부 동기화를 포함해 보고한 전처리/추론/후처리 시간이다.
+    # model_total_ms는 Python 호출 전체 wall-clock이므로 세 값의 합과 다를 수 있다.
+    speed = result.speed or {}
+    timing = {
+        "model_total_ms": model_total_ms,
+        "preprocess_ms": float(speed.get("preprocess") or 0.0),
+        "inference_ms": float(speed.get("inference") or 0.0),
+        "postprocess_ms": float(speed.get("postprocess") or 0.0),
+        "draw_ms": draw_ms,
+        "count_ms": count_ms,
+    }
+
+    return annotated, counts, timing

@@ -7,7 +7,7 @@ USB 웹캠 영상에 YOLO 탐지 결과(bbox+라벨)를 입혀 WebSocket으로 �
 
 ## 실행
 
-`weights/best.pt`가 있어야 한다(`train/train_yolo.py --export-best`로 생성).
+`model/best.pt`가 있어야 한다(`training/train_yolo.py --export-best`로 생성).
 
 ```bash
 pip install -r requirements.txt   # fastapi, uvicorn[standard] 포함
@@ -28,6 +28,19 @@ python stream/server.py --source 1 --model runs/pill_yolo/weights/best.pt
 # CPU로 강제 실행
 python stream/server.py --device cpu
 ```
+
+### 단계별 latency 기록
+
+```bash
+python3 -u stream/server.py \
+  --width 480 --height 360 --max-fps 5 \
+  --metrics-csv results/baseline_run1.csv \
+  --warmup-secs 30
+```
+
+종료하면 프레임별 capture, resize, preprocess, inference, postprocess, draw,
+JPEG encode, 전체 처리시간이 CSV에 저장되고, warm-up 이후의 평균/P50/P95가
+콘솔에 출력된다. `--metrics-csv`를 주지 않으면 계측값을 수집하지 않는다.
 
 전체 옵션은 `python stream/server.py --help` 참고.
 

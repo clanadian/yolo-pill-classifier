@@ -17,7 +17,7 @@ flowchart TB
         A8 --> B1["train_yolo.py\nYOLOv8n, imgsz 640"]
         B1 --> B2[("runs/pill_yolo/weights/best.pt\n(학습 체크포인트)")]
         B2 --> B3["--export-best\n(optimizer strip)"]
-        B3 --> B4[("weights/best.pt\n(배포용, 약 6MB)")]
+        B3 --> B4[("model/best.pt\n(배포용, 약 6MB)")]
     end
 
     subgraph DEPLOY["실시간 배포 — Jetson Nano"]

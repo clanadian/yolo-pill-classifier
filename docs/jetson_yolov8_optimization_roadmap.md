@@ -99,7 +99,7 @@ timestamp,frame_id,capture_ms,resize_ms,preprocess_ms,inference_ms,postprocess_m
 
 ### 필수 3 — TensorRT FP16 비교
 
-기존 `weights/best.pt`를 Jetson Nano에서 FP16 TensorRT engine으로 변환한다.
+기존 `model/best.pt`를 Jetson Nano에서 FP16 TensorRT engine으로 변환한다.
 TensorRT engine은 GPU와 TensorRT 버전에 종속되므로 다른 PC에서 만들어 복사하지 않는다.
 
 비교 대상은 두 개뿐이다.

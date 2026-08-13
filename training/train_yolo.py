@@ -10,17 +10,17 @@ data.yaml의 `path`는 만든 사람 컴퓨터의 절대경로로 박혀 있어 
 건드리지 않습니다. data.yaml이 아예 없으면 폴더 구조를 보고 새로 만듭니다.
 
 사용법:
-    python train/train_yolo.py
-    python train/train_yolo.py --model yolov8s.pt --epochs 100 --imgsz 640 --batch 16
-    python train/train_yolo.py --device 0 --export-best
+    python training/train_yolo.py
+    python training/train_yolo.py --model yolov8s.pt --epochs 100 --imgsz 640 --batch 16
+    python training/train_yolo.py --device 0 --export-best
 
     # Colab (T4 GPU)
-    !python train/train_yolo.py --data /content/dataset/data.yaml --workers 2 --export-best
+    !python training/train_yolo.py --data /content/dataset/data.yaml --workers 2 --export-best
 
     # 빠른 동작 확인 (2 epoch만)
-    python train/train_yolo.py --epochs 2 --name smoke
+    python training/train_yolo.py --epochs 2 --name smoke
 
-학습이 끝나면 best.pt 위치를 출력하고, --export-best를 주면 weights/best.pt로
+학습이 끝나면 best.pt 위치를 출력하고, --export-best를 주면 model/best.pt로
 복사합니다 (stream/server.py가 이 경로를 기본값으로 읽음).
 """
 
@@ -261,7 +261,7 @@ def main():
     parser.add_argument(
         "--export-best",
         action="store_true",
-        help="학습 후 best.pt를 weights/ 폴더로 복사 (stream/server.py 기본 경로)",
+        help="학습 후 best.pt를 model/ 폴더로 복사 (stream/server.py 기본 경로)",
     )
     args = parser.parse_args()
 
@@ -316,10 +316,10 @@ def main():
 
         if args.export_best:
             if best_pt.exists():
-                dest = REPO_ROOT / "weights" / "best.pt"
+                dest = REPO_ROOT / "model" / "best.pt"
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(best_pt, dest)
-                print(f"best.pt를 weights/ 폴더로 복사했습니다: {dest}")
+                print(f"best.pt를 model/ 폴더로 복사했습니다: {dest}")
             else:
                 print(f"[경고] best.pt를 찾을 수 없어 복사하지 못했습니다: {best_pt}")
     finally:
